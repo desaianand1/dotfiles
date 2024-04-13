@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALLER="replugged-installer-macos.app.tar.gz"
-DOWNLOAD_URL=https://github.com/replugged-org/tauri-installer/releases/latest/download/$INSTALLER"
+DOWNLOAD_URL="https://github.com/replugged-org/tauri-installer/releases/latest/download/$INSTALLER"
 
 # Install Discord Replugged
 curl -O $DOWNLOAD_URL
