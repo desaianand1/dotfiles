@@ -1,9 +1,7 @@
 # dotfiles
 buncha .dotfiles, and setup automation to get a new macOS machine up and running with minimal manual labor
 
-## ✏️ Credits
 
-A lot of my process and conventions are heavily borrowed from widely available templates and work found online [^1][^2][^3][^4]
 
 ## 👨‍💻 Tech Stack
 
@@ -12,6 +10,10 @@ Terminal: Kitty
 Shell: Zsh
 
 Zs
+
+## ✏️ Credits
+
+A lot of my process and conventions are heavily borrowed from widely available templates and work found online [^1][^2][^3][^4]
 
 
 

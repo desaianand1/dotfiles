@@ -6,5 +6,6 @@ export EDITOR="nvim"
 export PATH="/usr/local/opt/tcl-tk/bin:$PATH"
 export PATH=$PATH:/Users/anand/.spicetify
 eval $(thefuck --alias)
+source <(fx --comp zsh)
 eval "$(zoxide init zsh)"
 source $HOME/.zsh_aliases
