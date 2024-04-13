@@ -1,0 +1,4 @@
+id_rsa*.* filter=remove-ssh-key
+id_ed25519*.* filter=remove-ssh-key
+*.env filter=remove-pass
+.gitconfig filter=remove-pii
