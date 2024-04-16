@@ -4,8 +4,10 @@ gh
 git
 go
 fx
+fzf
 howdoi
 jq
+k9s
 neovim
 pnpm
 postgresql@14
