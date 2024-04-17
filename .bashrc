@@ -3,7 +3,7 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 source <(fx --comp bash)
-eval "$(zoxide init bash)"
+eval "$(zoxide init bash --cmd cd)"
 
 source "${HOME}/.zgenom/zgenom.zsh"
 

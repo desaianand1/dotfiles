@@ -15,7 +15,7 @@ export PATH=$PATH:/Users/anand/.spicetify
 
 eval $(thefuck --alias)
 source <(fx --comp zsh)
-eval "$(zoxide init zsh)"
+eval "$(zoxide init zsh --cmd cd)"
 eval "$(fzf --zsh)"
 
 source $HOME/.zsh_aliases
