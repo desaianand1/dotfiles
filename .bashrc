@@ -1,4 +1,5 @@
 export PATH="/usr/local/opt/tcl-tk/bin:$PATH"
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
@@ -25,3 +26,5 @@ if ! zgenom saved; then
         zgenom save 
 fi
 
+# Run fastfetch
+fastfetch
