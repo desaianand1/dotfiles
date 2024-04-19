@@ -1,13 +1,11 @@
 # dotfiles
 buncha .dotfiles, and setup automation to get a new macOS machine up and running with minimal manual labor
 
-
-
 ## 👨‍💻 Tech Stack
 
-Terminal: Kitty
-
-Shell: Zsh
+💻 Terminal: Kitty
+🐚 Shell: Zsh
+✍️ Font: JetBrains Nerd Font Mono (primarily, among others)
 
 Zs
 
