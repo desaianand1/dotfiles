@@ -1,11 +1,17 @@
 # dotfiles
 buncha .dotfiles, and setup automation to get a new macOS machine up and running with minimal manual labor
 
-## 👨‍💻 Tech Stack
+## The Shinies
 
-💻 Terminal: Kitty
-🐚 Shell: Zsh
-✍️ Font: JetBrains Nerd Font Mono (primarily, among others)
+- 💻 Terminal: kitty
+- 🐚 Shell: zsh (& zgenom for some plugin management)
+- ✍️ Font: JetBrains Nerd Font Mono (primarily; Fira Code Mono among others)
+- 📝 Code Editor: Neovim and VSCode depending on the mood and language.
+- 📝 Note Editor: Obsidian, rarely Typora.
+- 🎨 Themes: Catppuccin Macchiato (rotate between Everforest Dark, Tokyo Night Storm, (Atom) One Dark Pro and Rose Pine Moon)
+  I have themed damn near everything from kitty, neovim, firefox to Alfred, Discord, Spotify, Obsidian and even Bitwarden using these palettes
+- 
+
 
 Zs
 
