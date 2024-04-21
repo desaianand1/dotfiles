@@ -20,7 +20,12 @@ eval $(thefuck --alias)
 source <(fx --comp zsh)
 eval "$(zoxide init zsh --cmd cd)"
 eval "$(fzf --zsh)"
-
+source "${HOME}/.config/fzf/fzf-git.sh"
+# fzf catppuccin macchiato theme
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
+--color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6 \
+--color=marker:#f4dbd6,fg+:#cad3f5,prompt:#c6a0f6,hl+:#ed8796"
 source $HOME/.zsh_aliases
 
 source "${HOME}/.zgenom/zgenom.zsh"
@@ -34,6 +39,7 @@ if ! zgenom saved; then
 	zgenom ohmyzsh plugins/git
 	zgenom ohmyzsh plugins/gitignore
 	zgenom ohmyzsh --completion plugins/kubectl
+	zgenom load "MichaelAquilina/zsh-you-should-use"
 	zgenom load romkatv/powerlevel10k powerlevel10k
 	zgenom load zdharma-continuum/fast-syntax-highlighting
 	zgenom load zsh-users/zsh-completions
