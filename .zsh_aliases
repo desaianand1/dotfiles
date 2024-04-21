@@ -1,9 +1,15 @@
 # --- dotfiles repo work tree ---
 alias dotfiles='/usr/bin/git --git-dir=/Users/anand/dotfiles/ --work-tree=/Users/anand'
 # -- end dotfiles ---
+
+# --- custom ---
+alias projects='${HOME}/Developer/Projects/'
+# --- end custom ---
+
 # --- bat ---
 alias cat='bat'
 # --- end bat ---
+
 # --- fzf ---
 alias fcat='fzf --preview "bat --color=always {}" --preview-window "~3"'
 # --- end fzf ---
