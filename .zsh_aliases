@@ -1,7 +1,14 @@
+# --- dotfiles repo work tree ---
 alias dotfiles='/usr/bin/git --git-dir=/Users/anand/dotfiles/ --work-tree=/Users/anand'
+# -- end dotfiles ---
+# --- bat ---
+alias cat='bat'
+# --- end bat ---
+# --- fzf ---
+alias fcat='fzf --preview "bat --color=always {}" --preview-window "~3"'
+# --- end fzf ---
 
-# --- EZA ---
-
+# --- eza ---
 if ! type eza >/dev/null 2>&1; then
   print 'eza not found. Please install eza before using this plugin or use the zsh-ls plugin.' >&2
   return 1
@@ -33,5 +40,4 @@ fi
 
 alias lt='ls -T'
 alias tree=lt
-
-# --- end EZA ---
+# --- end eza ---
