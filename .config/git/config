@@ -8,11 +8,19 @@
 [init]
 	defaultBranch = main
 
+[color]
+	ui = auto
+	status = auto
+	branch = auto	
+
 [interactive]
-	diffFilter = delta --color-only
+	diffFilter = delta --color-only --features=interactive
 
 [delta]
+	features = Catppuccin Macchiato zebra-dark
 	navigate = true
+	line-numbers = true
+	side-by-side = true
 
 [merge]
 	conflictstyle = diff3
