@@ -6,14 +6,7 @@ echo "🍺Installing Homebrew..."
 
 brew update
 
-# Homebrew Taps
-
-brew tap homebrew/cask-versions
-brew tap homebrew/cask-fonts
-
 # Install apps and casks
-echo "🍻Fetching all your brews!"
-xargs brew install < .brew-list
-echo "🍻Fetching all your casked brews!"
-xargs brew install --cask < .brew-cask-list
+echo "🍻Fetching all your brews, casks and mac App Store apps!"
+brew bundle --file=~/.config/brew/Brewfile
 echo "✨Done! Homebrew is installed and brewed!"
