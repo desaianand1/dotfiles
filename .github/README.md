@@ -1,17 +1,19 @@
 # dotfiles
-buncha .dotfiles, and setup automation to get a new macOS machine up and running with minimal manual labor
+miscellanous .dotfiles, and setup automation to get a new macOS machine up and running with minimal labor
 
 ## Overview
-
+TODO: Add system screenshot
+### System
 - 💻 Terminal: kitty
 - 🐚 Shell: zsh (& zgenom for some plugin management)
 - ✍️ Font: JetBrains Nerd Font Mono (primarily; Fira Code Mono, Mononoki among others)
 - 📝 Code Editor: Neovim or VSCode depending on the mood and language.
 - 📝 Note Editor: Obsidian, rarely Typora.
 - 💬 Prompt: p10k
-- 🪟 Window Manager: Rectangle (@Apple how is this not a native feature)
+- 🪟 Window Manager: xQuartz + Rectangle (@Apple how is this not a native feature)
 
-## 🎨 Themes
+### 🎨 Themes
+TODO: add theme screenshot
 - Catppuccin Macchiato (Primary)
 - Everforest Dark
 - Tokyo Night Storm
@@ -19,12 +21,10 @@ buncha .dotfiles, and setup automation to get a new macOS machine up and running
 - Rose Pine Moon
 - ... a few others I rotate through
 
-I have themed damn near everything from kitty, Neovim, Firefox to Alfred, Discord, Spotify, Obsidian and even Bitwarden, zsh-fast-syntax-highlighting, k9s, fx and matplotlib using these palettes.
-A lot of time sunk into adding pretty colors...
+Everything has been themed from kitty, Neovim, Firefox to Alfred, Discord, Spotify, Obsidian and even Bitwarden, zsh-fast-syntax-highlighting, k9s, bat, fx and matplotlib using these palettes.
+I've wasted way too much time on this.
 
-## Terminal niceties
-
-> Listed in `.fresh_install/.brew-list`
+### Terminal niceties
 
 - zoxide (aliased to `cd`): Makes it sooo convenient to jump around far directories without spamming `ls` to figure out paths or cycling zsh history. Great tool!
 - fzf: Fuzzy search to find anything, anywhere with an intuitive terminal interface. Great for cherry picking.
@@ -36,12 +36,9 @@ A lot of time sunk into adding pretty colors...
 - howdoi: solves those split-second "how do I exit vim again?" moments right in the terminal. Saves a trip to the browser/stackoverflow
 - commitizen: interactive helper tool to create [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
-## Mac apps & tools
-> Some noteworthy Mac apps or menu bar tools that are useful for everyday tasks.
-> Listed in `.brew-list`, `.brew-cask-list` or `.mac-apps-list`
+## Installation
 
-- Alfred: Spotlight replacement. The Old Guard. Still great!
-- 
+TODO: replicate install steps
 
 
 ## ✏️ Credits
