@@ -2,7 +2,7 @@
 miscellanous .dotfiles, and setup automation to get a new macOS machine up and running with minimal labor
 
 ## Overview
-TODO: Add system screenshot
+TODO: Add system screenshot. 
 ### System
 - 💻 Terminal: kitty
 - 🐚 Shell: zsh (& zgenom for some plugin management)
