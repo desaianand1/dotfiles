@@ -49,7 +49,7 @@ A lot of my dotfile management process and conventions are heavily borrowed from
 
 [^1]: https://wiki.archlinux.org/title/Dotfiles
 [^2]: https://news.ycombinator.com/item?id=11071754
-[^3]: https://medium.com/@todariasova/managing-your-dotfiles-59e13e8ab2d
+[^3]: https://medium.com/@todariasova/managing-your-dotfiles-59e13e8ab2d6
 [^4]: https://www.atlassian.com/git/tutorials/dotfiles
 
 
