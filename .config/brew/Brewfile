@@ -37,6 +37,7 @@ brew "zoxide"
 # ------
 # Casks
 # ------
+cask "affinity-designer"
 cask "alfred"
 cask "alt-tab"
 cask "appcleaner"
