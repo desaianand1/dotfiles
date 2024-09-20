@@ -4,3 +4,5 @@
 id_rsa*
 id_ed25519*
 \.git
+.config/git/config.local
+.config/ssh/config.local
