@@ -3,6 +3,7 @@
 
 [core]
 	excludesfile = /Users/anand/.gitignore
+	editor = nvim
 	pager = delta
 
 [init]
