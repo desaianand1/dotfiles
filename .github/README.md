@@ -29,8 +29,8 @@ Miscellaneous .dotfiles and setup automation to get a new macOS machine up and r
 
 ### 🎨 Themes
 
-| ![Spotify-VSCode](./images/spotify-vscode.png "Spotify, VSCode Theme") | ![Obsidian-Discord](./images/obsidian-discord.png "Obsidian, Discord Theme") | ![Misc-Tools](./images/home-statuses.png "Misc Tools") |   |   |
-|:----------------------------------------------------------------------:|------------------------------------------------------------------------------|--------------------------------------------------------|---|---|
+| ![Spotify-VSCode](./images/spotify-vscode.png "Spotify, VSCode Theme") | ![Obsidian-Discord](./images/obsidian-discord.png "Obsidian, Discord Theme") | ![Misc-Tools](./images/home-statuses.png "Misc Tools") |
+|:----------------------------------------------------------------------:|------------------------------------------------------------------------------|------------------------------------------------------------------------------|
 
 - [Catppuccin Macchiato](https://catppuccin.com/) (Primary)
 - [Everforest Dark](https://github.com/sainnhe/everforest/tree/master)
