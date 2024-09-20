@@ -78,7 +78,7 @@ setup_dotfiles() {
         exit 1
     fi
 
-    echo "Setting up git configurations..."
+    echo "Setting up bare git repo configurations..."
     dotfiles config status.showUntrackedFiles no
     dotfiles config core.worktree "$HOME"
 
@@ -98,18 +98,29 @@ setup_dotfiles() {
     fi
 }
 
-# macOS-specific setup
-macos_setup() {
-    # Install Homebrew if not already installed
-    if ! command -v brew >/dev/null 2>&1; then
-        echo "Installing Homebrew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Setup Git and SSH configs
+setup_local_configs() {
+    # Set up Git config
+    if [ ! -f "$HOME/.config/git/config.local" ]; then
+        cp "$HOME/.config/git/config.local.example" "$HOME/.config/git/config.local"
+        echo "Created ~/.config/git/config.local. Please update it with your local Git configurations."
+    fi
+    if [ ! -f "$HOME/.config/git/ignore" ]; then
+        touch "$HOME/.config/git/ignore"
+        echo "Created ~/.config/git/ignore. Add your global gitignore patterns here."
     fi
 
-    # Install macOS command line tools if not already installed
-    if ! xcode-select -p >/dev/null 2>&1; then
-        echo "Installing macOS command line tools..."
-        xcode-select --install
+    # Set up SSH config
+    mkdir -p "$HOME/.ssh"
+    if [ ! -f "$HOME/.ssh/config" ]; then
+        cp "$HOME/.ssh/config.template" "$HOME/.ssh/config"
+        echo "Created ~/.ssh/config. Please review and update as needed."
+    fi
+    mkdir -p "$HOME/.config/ssh"
+    if [ ! -f "$HOME/.config/ssh/config.local" ]; then
+        cp "$HOME/.config/ssh/config.local.example" "$HOME/.config/ssh/config.local"
+        chmod 600 "$HOME/.config/ssh/config.local"
+        echo "Created ~/.config/ssh/config.local. Please update it with your local SSH configurations."
     fi
 }
 
@@ -119,10 +130,6 @@ main() {
     echo "It will clone the repository, backup existing files, and set up the necessary configurations."
     
     check_prerequisites
-
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        macos_setup
-    fi
 
     read -p "Do you want to use SSH for cloning? (y/n) " -n 1 -r
     echo
@@ -141,9 +148,11 @@ main() {
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         setup_dotfiles "$remote_url"
+	setup_local_configs
         echo "✅ Dotfiles setup complete!"
         echo "🔄 Please restart your shell or source your .zshrc file to use the new alias."
         echo "You can now use the '$ALIAS_NAME' command to manage your dotfiles."
+	echo "⚠️  Don't forget to update ~/.config/git/config.local and ~/.config/ssh/config.local with your sensitive information."
     else
         echo "❌ Setup cancelled."
     fi
