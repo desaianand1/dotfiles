@@ -125,6 +125,17 @@ setup_local_configs() {
     fi
 }
 
+setup_github_config() {
+    local github_user=$(git config --global github.user)
+    if [ -z "$github_user" ]; then
+        read -p "Enter your GitHub username: " github_user
+        git config --global github.user "$github_user"
+        echo "GitHub username set to: $github_user"
+    else
+        echo "GitHub username already set to: $github_user"
+    fi
+}
+
 # Main execution
 main() {
     echo "This script will set up your dotfiles repository."
@@ -150,10 +161,12 @@ main() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         setup_dotfiles "$remote_url"
 	setup_local_configs
+	setup_github_config
         echo "✅ Dotfiles setup complete!"
         echo "🔄 Please restart your shell or source your .zshrc file to use the new alias."
         echo "You can now use the '$ALIAS_NAME' command to manage your dotfiles."
 	echo "⚠️  Don't forget to update ~/.config/git/config.local and ~/.config/ssh/config.local with your sensitive information."
+	echo "🚀 Run 'gh auth login' to authenticate with GitHub CLI if you haven't already."
     else
         echo "❌ Setup cancelled."
     fi

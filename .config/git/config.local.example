@@ -1,4 +1,6 @@
 [user]
         name = First Last
         email = your@email.com
+[github]
+    user = your-github-username
 
