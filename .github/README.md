@@ -15,7 +15,7 @@ Miscellaneous .dotfiles and setup automation to get a new macOS machine up and r
 
 ## Overview
 
-TODO: Add system screenshot.
+![System Overview](./images/home-terminal.png "System Overview")
 
 ### System
 
@@ -29,7 +29,8 @@ TODO: Add system screenshot.
 
 ### 🎨 Themes
 
-TODO: add theme screenshot
+| ![Spotify-VSCode](./images/spotify-vscode.png "Spotify, VSCode Theme") | ![Obsidian-Discord](./images/obsidian-discord.png "Obsidian, Discord Theme") | ![Misc-Tools](./images/home-statuses.png "Misc Tools") |   |   |
+|:----------------------------------------------------------------------:|------------------------------------------------------------------------------|--------------------------------------------------------|---|---|
 
 - [Catppuccin Macchiato](https://catppuccin.com/) (Primary)
 - [Everforest Dark](https://github.com/sainnhe/everforest/tree/master)
