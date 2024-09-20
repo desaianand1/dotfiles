@@ -1,0 +1,29 @@
+# Example file for ~/.config/ssh/config.local
+# Copy this template to ~/.config/ssh/config.local and modify as needed
+
+# Example of a host with a specific identity file and other custom settings
+# Host example-host
+#     HostName example.com
+#     User your-username
+#     IdentityFile ~/.ssh/specific_key
+#     Port 2222
+#     ForwardAgent yes
+
+# Example of a jump host configuration
+# Host jump-host
+#     HostName jump.example.com
+#     User jump-user
+#     IdentityFile ~/.ssh/jump_key
+
+# Host internal-server
+#     HostName internal.example.com
+#     User internal-user
+#     ProxyJump jump-host
+
+# Add any machine-specific or sensitive SSH configurations here
+# This may include:
+# - Specific IdentityFile paths for different hosts
+# - Custom ports for specific hosts
+# - ProxyJump configurations for accessing servers through jump hosts
+# - ForwardAgent settings (be cautious with this for security reasons)
+# - Specific User names for different hosts

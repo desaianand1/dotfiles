@@ -1,6 +1,7 @@
 *.env
 !.env.example
 .ssh/
+!.ssh/config
 id_rsa*
 id_ed25519*
 \.git
