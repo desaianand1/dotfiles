@@ -1,8 +1,8 @@
 [include]
- 	path = ~/.config/git/.gitconfig.local
+ 	path = ~/.config/git/config.local
 
 [core]
-	excludesfile = /Users/anand/.gitignore
+	excludesfile = ~/.config/git/ignore
 	editor = nvim
 	pager = delta
 
