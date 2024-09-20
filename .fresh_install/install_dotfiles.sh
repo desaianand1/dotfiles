@@ -101,6 +101,7 @@ setup_dotfiles() {
 # Setup Git and SSH configs
 setup_local_configs() {
     # Set up Git config
+    mkdir -p "$HOME/.config/git"
     if [ ! -f "$HOME/.config/git/config.local" ]; then
         cp "$HOME/.config/git/config.local.example" "$HOME/.config/git/config.local"
         echo "Created ~/.config/git/config.local. Please update it with your local Git configurations."
@@ -113,7 +114,7 @@ setup_local_configs() {
     # Set up SSH config
     mkdir -p "$HOME/.ssh"
     if [ ! -f "$HOME/.ssh/config" ]; then
-        cp "$HOME/.ssh/config.template" "$HOME/.ssh/config"
+        cp "$HOME/.ssh/config.example" "$HOME/.ssh/config"
         echo "Created ~/.ssh/config. Please review and update as needed."
     fi
     mkdir -p "$HOME/.config/ssh"
