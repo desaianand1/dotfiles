@@ -1,4 +1,8 @@
 # --- dotfiles repo work tree ---
+# Exit if not running interactively
+[[ $- != *i* ]] && return
+
+# --- dotfiles ---
 alias dotfiles='/usr/bin/git --git-dir=/Users/anand/dotfiles/ --work-tree=/Users/anand'
 # -- end dotfiles ---
 
@@ -47,3 +51,8 @@ fi
 alias lt='ls -T'
 alias tree=lt
 # --- end eza ---
+
+# --- Typora ---
+alias typora="open -a typora"
+# --- end Typora ---
+
