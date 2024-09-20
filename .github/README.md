@@ -82,37 +82,37 @@ Follow these steps to set up your new macOS machine with these dotfiles:
 
 1. Clone the dotfiles repository:
 
-```bash
-zsh -c "$(curl -fsSL https://raw.githubusercontent.com/desaianand1/dotfiles/main/install_dotfiles.sh)"
-```
+    ```bash
+    zsh -c "$(curl -fsSL https://raw.githubusercontent.com/desaianand1/dotfiles/main/install_dotfiles.sh)"
+    ```
 
-This script will:
+    This script will:
 
-- Clone the dotfiles repository
-- Backup existing dotfiles
-- Set up the necessary configurations for git & ssh
+      - Clone the dotfiles repository
+      - Backup existing dotfiles
+      - Set up the necessary configurations for git & ssh
 
 2. Install Homebrew packages and applications:
 
-```bash
-zsh ~/.fresh_install/install_all.sh
-```
+    ```bash
+    zsh ~/.fresh_install/install_all.sh
+    ```
 
-This script will:
+    This script will:
 
-- Install Homebrew and all its brews and casks
-- Install other otherwise-manual applications like `zgenom`, kitty etc. (see the `.fresh_install/` directory for a complete overview)
+      - Install Homebrew and all its brews and casks
+      - Install other otherwise-manual applications like `zgenom`, kitty etc. (see the `.fresh_install/` directory for a complete overview)
 
 3. Restart your terminal or run `source ~/.zshrc` to apply the changes.
 
 4. Customize your setup:
 
-- Choose a theme in kitty: `kitten themes`
-- Configure Neovim: Edit `~/.config/nvim/init.vim` or `~/.config/nvim/init.lua`
-- Adjust Powerlevel10k: Run `p10k configure`
-- (Optional) Update `~/.config/git/config.local`
-- (Optional) Update `~/.config/ssh/config.local`
-- (Optional) Run `gh auth login` to authenticate with GitHub CLI 
+      - Choose a theme in kitty: `kitten themes`
+      - Configure Neovim: Edit `~/.config/nvim/init.vim` or `~/.config/nvim/init.lua`
+      - Adjust Powerlevel10k: Run `p10k configure`
+      - (Optional) Update `~/.config/git/config.local`
+      - (Optional) Update `~/.config/ssh/config.local`
+      - (Optional) Run `gh auth login` to authenticate with GitHub CLI 
 
 ### Customization
 
