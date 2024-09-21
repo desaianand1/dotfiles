@@ -124,7 +124,7 @@ dotfiles commit -m "Add configuration for new_tool"
 dotfiles push
 ```
 
-- **Updating existing configurations**: Edit the files as normal, then use the dotfiles command to commit and push changes:
+- **Updating existing configurations**: Edit the files as normal, then use the `dotfiles` command to commit and push changes:
 
 ```bash
 dotfiles commit -am "Update kitty configuration"
