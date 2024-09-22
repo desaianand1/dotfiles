@@ -3,72 +3,101 @@
 set -eo pipefail
 
 CALIBRE_WEB_DIR="$HOME/calibre-web"
-PYTHON_VERSION="3.9.13"  # You can adjust this to your preferred Python version
+VENV_DIR="$CALIBRE_WEB_DIR/venv"
+PLIST_FILE="$HOME/Library/LaunchAgents/com.calibre-web.plist"
 
-install_dependencies() {
-    echo "Installing dependencies..."
-    brew install imagemagick ghostscript
+check_dependencies() {
+    local missing_deps=()
+    
+    if ! command -v pyenv &> /dev/null; then
+        missing_deps+=("pyenv")
+    fi
+    
+    if ! command -v pip &> /dev/null; then
+        missing_deps+=("pip")
+    fi
+    
+    if ! command -v brew &> /dev/null; then
+        missing_deps+=("brew")
+    fi
+    
+    if [ ${#missing_deps[@]} -ne 0 ]; then
+        echo "Error: The following required dependencies are missing:"
+        printf '%s\n' "${missing_deps[@]}"
+        echo "Please install these dependencies and run the script again."
+        exit 1
+    fi
+}
+
+check_imagemagick() {
+    if ! brew list imagemagick &>/dev/null; then
+        echo "Error: ImageMagick is not installed."
+        echo "Please install them using Homebrew:"
+        echo "brew install imagemagick"
+        exit 1
+    fi
 }
 
 setup_python_environment() {
-    echo "Setting up Python environment..."
-    pyenv install -s $PYTHON_VERSION
-    pyenv global $PYTHON_VERSION
-    python -m venv "$CALIBRE_WEB_DIR/venv"
-    source "$CALIBRE_WEB_DIR/venv/bin/activate"
-    pip install --upgrade pip
+    if [ ! -d "$VENV_DIR" ]; then
+        echo "Setting up Python virtual environment..."
+        python -m venv "$VENV_DIR"
+    fi
+    source "$VENV_DIR/bin/activate"
 }
 
 install_calibre_web() {
-    echo "Installing Calibre-Web..."
-    pip install calibreweb
-
-    # Install optional features
-    pip install calibreweb[metadata]
-    pip install calibreweb[comics]
-    pip install calibreweb[kobo]
+    if ! pip show calibreweb &>/dev/null; then
+        echo "Installing Calibre-Web..."
+        pip install calibreweb
+        pip install calibreweb[metadata] calibreweb[comics] calibreweb[kobo] calibreweb[goodreads] calibreweb[oauth]
+    else
+        echo "Calibre-Web is already installed. Checking for updates..."
+        pip install --upgrade calibreweb
+        pip install --upgrade calibreweb[metadata] calibreweb[comics] calibreweb[kobo] calibreweb[goodreads] calibreweb[oauth]
+    fi
 }
 
 setup_calibre_web() {
-    echo "Setting up Calibre-Web configuration..."
-    
-    # Prompt for existing Calibre library location
-    read -p "Enter the path to your existing Calibre library (or press Enter to create a new one): " CALIBRE_LIBRARY_PATH
-    
-    if [ -z "$CALIBRE_LIBRARY_PATH" ]; then
-        CALIBRE_LIBRARY_PATH="$HOME/calibre-library"
-        mkdir -p "$CALIBRE_LIBRARY_PATH"
-        echo "Created new Calibre library at $CALIBRE_LIBRARY_PATH"
+    if [ ! -f "$CALIBRE_WEB_DIR/app.db" ]; then
+        echo "Setting up Calibre-Web configuration..."
+        
+        read -p "Enter the path to your existing Calibre library (or press Enter to create a new one): " CALIBRE_LIBRARY_PATH
+        
+        if [ -z "$CALIBRE_LIBRARY_PATH" ]; then
+            CALIBRE_LIBRARY_PATH="$HOME/calibre-library"
+            mkdir -p "$CALIBRE_LIBRARY_PATH"
+            echo "Created new Calibre library at $CALIBRE_LIBRARY_PATH"
+        else
+            if [ ! -d "$CALIBRE_LIBRARY_PATH" ]; then
+                echo "The specified directory does not exist. Please check the path and try again."
+                exit 1
+            fi
+            if [ ! -f "$CALIBRE_LIBRARY_PATH/metadata.db" ]; then
+                echo "Warning: No metadata.db found in the specified directory. Make sure this is a valid Calibre library."
+            fi
+        fi
+        
+        echo "Calibre-Web initial setup:"
+        echo "1. Open http://localhost:8083 in your browser"
+        echo "2. Log in with the default credentials (admin/admin123)"
+        echo "3. Go to the admin page and set 'Location of Calibre database' to: $CALIBRE_LIBRARY_PATH"
+        echo "4. Configure any other settings as needed"
+        echo "5. Once done, press any key to continue"
+        
+        cps &
+        CPS_PID=$!
+        read -n 1 -s
+        kill $CPS_PID
     else
-        if [ ! -d "$CALIBRE_LIBRARY_PATH" ]; then
-            echo "The specified directory does not exist. Please check the path and try again."
-            exit 1
-        fi
-        if [ ! -f "$CALIBRE_LIBRARY_PATH/metadata.db" ]; then
-            echo "Warning: No metadata.db found in the specified directory. Make sure this is a valid Calibre library."
-        fi
+        echo "Calibre-Web is already set up. Skipping initial configuration."
     fi
-    
-    # Start Calibre-Web for initial setup
-    cps &
-    CPS_PID=$!
-    
-    echo "Calibre-Web is starting. Please complete the following steps:"
-    echo "1. Open http://localhost:8083 in your browser"
-    echo "2. Log in with the default credentials (admin/admin123)"
-    echo "3. Go to the admin page and set 'Location of Calibre database' to: $CALIBRE_LIBRARY_PATH"
-    echo "4. Configure any other settings as needed"
-    echo "5. Once done, press any key to continue"
-    
-    read -n 1 -s
-    kill $CPS_PID
 }
 
 setup_launchd() {
-    PLIST_FILE="$HOME/Library/LaunchAgents/com.calibre-web.plist"
-    
-    echo "Creating LaunchAgent for Calibre-Web..."
-    cat > "$PLIST_FILE" << EOL
+    if [ ! -f "$PLIST_FILE" ]; then
+        echo "Creating LaunchAgent for Calibre-Web..."
+        cat > "$PLIST_FILE" << EOL
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -77,7 +106,7 @@ setup_launchd() {
     <string>com.calibre-web</string>
     <key>ProgramArguments</key>
     <array>
-        <string>$CALIBRE_WEB_DIR/venv/bin/cps</string>
+        <string>$VENV_DIR/bin/cps</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -92,13 +121,16 @@ setup_launchd() {
 </dict>
 </plist>
 EOL
-
-    launchctl load "$PLIST_FILE"
-    echo "LaunchAgent for Calibre-Web has been created and loaded."
+        launchctl load "$PLIST_FILE"
+        echo "LaunchAgent for Calibre-Web has been created and loaded."
+    else
+        echo "LaunchAgent for Calibre-Web already exists. Skipping creation."
+    fi
 }
 
 echo "Starting Calibre-Web installation..."
-install_dependencies
+check_dependencies
+check_imagemagick
 setup_python_environment
 install_calibre_web
 setup_calibre_web
