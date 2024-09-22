@@ -58,12 +58,29 @@ install_calibre_web() {
     fi
 }
 
+resolve_path() {
+    local path="$1"
+    # Expand tilde to $HOME
+    path="${path/#\~/$HOME}"
+    # Convert to absolute path if it's not already
+    if [[ "$path" != /* ]]; then
+        path="$PWD/$path"
+    fi
+    # Normalize the path
+    local resolved_path=$(cd -P "$(dirname "$path")" 2>/dev/null && pwd -P)
+    if [ $? -eq 0 ]; then
+        echo "$resolved_path/$(basename "$path")"
+    else
+        echo "$path"
+    fi
+}
+
 setup_calibre_web() {
     if [ ! -f "$CALIBRE_WEB_DIR/app.db" ]; then
         echo "Setting up Calibre-Web configuration..."
         
         while true; do
-            read -p "Enter the absolute path to your existing Calibre library (or press Enter to create a new one): " CALIBRE_LIBRARY_PATH
+            read -p "Enter the path to your existing Calibre library (or press Enter to create a new one): " CALIBRE_LIBRARY_PATH
             
             if [ -z "$CALIBRE_LIBRARY_PATH" ]; then
                 CALIBRE_LIBRARY_PATH="$HOME/calibre-library"
@@ -71,8 +88,8 @@ setup_calibre_web() {
                 echo "Created new Calibre library at $CALIBRE_LIBRARY_PATH"
                 break
             else
-                # Convert to absolute path if relative
-                CALIBRE_LIBRARY_PATH=$(realpath -m "$CALIBRE_LIBRARY_PATH")
+                # Resolve path (convert to absolute if needed)
+                CALIBRE_LIBRARY_PATH=$(resolve_path "$CALIBRE_LIBRARY_PATH")
                 
                 if [ ! -d "$CALIBRE_LIBRARY_PATH" ]; then
                     echo "The specified directory does not exist. Please check the path and try again."
