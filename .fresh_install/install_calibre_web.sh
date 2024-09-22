@@ -62,21 +62,33 @@ setup_calibre_web() {
     if [ ! -f "$CALIBRE_WEB_DIR/app.db" ]; then
         echo "Setting up Calibre-Web configuration..."
         
-        read -p "Enter the path to your existing Calibre library (or press Enter to create a new one): " CALIBRE_LIBRARY_PATH
+        while true; do
+            read -p "Enter the absolute path to your existing Calibre library (or press Enter to create a new one): " CALIBRE_LIBRARY_PATH
+            
+            if [ -z "$CALIBRE_LIBRARY_PATH" ]; then
+                CALIBRE_LIBRARY_PATH="$HOME/calibre-library"
+                mkdir -p "$CALIBRE_LIBRARY_PATH"
+                echo "Created new Calibre library at $CALIBRE_LIBRARY_PATH"
+                break
+            else
+                # Convert to absolute path if relative
+                CALIBRE_LIBRARY_PATH=$(realpath -m "$CALIBRE_LIBRARY_PATH")
+                
+                if [ ! -d "$CALIBRE_LIBRARY_PATH" ]; then
+                    echo "The specified directory does not exist. Please check the path and try again."
+                    continue
+                fi
+                if [ ! -f "$CALIBRE_LIBRARY_PATH/metadata.db" ]; then
+                    read -p "Warning: No metadata.db found in the specified directory. Are you sure this is a valid Calibre library? (y/n) " confirm
+                    if [[ $confirm != [yY] ]]; then
+                        continue
+                    fi
+                fi
+                break
+            fi
+        done
         
-        if [ -z "$CALIBRE_LIBRARY_PATH" ]; then
-            CALIBRE_LIBRARY_PATH="$HOME/calibre-library"
-            mkdir -p "$CALIBRE_LIBRARY_PATH"
-            echo "Created new Calibre library at $CALIBRE_LIBRARY_PATH"
-        else
-            if [ ! -d "$CALIBRE_LIBRARY_PATH" ]; then
-                echo "The specified directory does not exist. Please check the path and try again."
-                exit 1
-            fi
-            if [ ! -f "$CALIBRE_LIBRARY_PATH/metadata.db" ]; then
-                echo "Warning: No metadata.db found in the specified directory. Make sure this is a valid Calibre library."
-            fi
-        fi
+        echo "Using Calibre library at: $CALIBRE_LIBRARY_PATH"
         
         echo "Calibre-Web initial setup:"
         echo "1. Open http://localhost:8083 in your browser"
