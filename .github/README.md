@@ -50,7 +50,7 @@ Everything has been themed from kitty, Neovim, Firefox to Alfred, Discord, Spoti
 - k9s: Splendid Kubernetes client, right in your terminal. Free, OSS and themeable. Octant or Lens could never.
 - tldr: Provides brief `man` excerpts and usecases for my simple, monkey brain. Very useful for daunting commands.
 - thefuck: Aides my clumsy fingers. Auto-fixes broken commands or typos by executing the correct intention when you type `fuck`. Pretty carthatic at times.
-- howdoi: Solves those split-second "how do I exit vim again?" moments right in the terminal. Saves a trip to the browser/stackoverflow
+- howdoi: Solves those split-second "how do I exit vim again?"-esque moments right in the terminal. Saves a trip to the browser/stackoverflow
 - commitizen: Interactive helper tool to create [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ## Dotfiles Setup - Bare Git Repository
