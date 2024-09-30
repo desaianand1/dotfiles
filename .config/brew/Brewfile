@@ -51,6 +51,7 @@ cask "discord"
 cask "docker"
 cask "itsycal"
 cask "figma"
+cask "firefox-developer-edition"
 cask "font-fira-code-nerd-font"
 cask "font-fira-mono-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
@@ -67,7 +68,7 @@ cask "spotify"
 cask "typora"
 cask "ubersicht"
 cask "visual-studio-code"
-cask "firefox-developer-edition"
+cask "whisky"
 # ------
 # Mac App Store Apps
 # ------
