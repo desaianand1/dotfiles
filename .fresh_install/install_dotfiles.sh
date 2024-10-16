@@ -28,7 +28,6 @@ check_prerequisites() {
     fi
 }
 
-# Backup existing dotfiles
 backup_existing_files() {
     echo "🗃️ Backing up existing dotfiles to $BACKUP_DIR"
     mkdir -p "$BACKUP_DIR"
@@ -44,7 +43,6 @@ backup_existing_files() {
     done
 }
 
-# Setup dotfiles
 setup_dotfiles() {
     local remote_url="$1"
     if [ -d "$LOCAL_WORKTREE_REPO" ]; then
@@ -62,7 +60,7 @@ setup_dotfiles() {
     echo "Cloning dotfiles GitHub repo..."
     git clone --bare "$remote_url" "$LOCAL_WORKTREE_REPO"
 
-    # Define the dotfiles function
+    # Define the dotfiles function to manage git worktree
     dotfiles() {
         git --git-dir="$LOCAL_WORKTREE_REPO" --work-tree="$HOME" "$@"
     }
@@ -136,7 +134,6 @@ setup_github_config() {
     fi
 }
 
-# Main execution
 main() {
     echo "This script will set up your dotfiles repository."
     echo "It will clone the repository, backup existing files, and set up the necessary configurations."
