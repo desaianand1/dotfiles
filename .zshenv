@@ -4,3 +4,4 @@ export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 export JAVA_HOME=/opt/homebrew/opt/openjdk
 export PATH=$PATH:/Users/anand/.spicetify
 export NVM_DIR="$HOME/.nvm"
+export PATH=$HOME/Developer/flutter/bin:$PATH
