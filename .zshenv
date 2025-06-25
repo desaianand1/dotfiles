@@ -9,3 +9,5 @@ export PATH=$HOME/Developer/flutter/bin:$PATH
 export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
 export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$PATH":"$HOME/.pub-cache/bin"
+
