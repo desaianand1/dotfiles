@@ -46,3 +46,5 @@ export FZF_DEFAULT_OPTS=" \
 # Load Powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# NOTE: this alias already exists in .zsh_aliases but Claude Code seems to look in .zshrc by default and claude doctor won't shut up unless I put it here :(
+alias claude="$HOME/.claude/local/claude"
