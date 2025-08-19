@@ -56,7 +56,3 @@ alias tree=lt
 alias typora="open -a typora"
 # --- end Typora ---
 
-# --- Claude Code ---
-alias claude="/Users/anand/.claude/local/claude"
-# --- end Claude Code ---
-
