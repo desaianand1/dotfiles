@@ -6,6 +6,7 @@ tap "homebrew/cask-versions"
 # ------
 # Brews
 # ------
+brew "ast-grep"
 brew "bat"
 brew "commitizen"
 brew "eza"
