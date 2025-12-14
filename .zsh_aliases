@@ -1,3 +1,11 @@
+# --- [IMPORTANT] kitty terminal workaround for SSH xterm compatibility ---
+# See for context: https://github.com/kovidgoyal/kitty/issues/713#issuecomment-750704294
+#
+
+alias ssh='kitty +kitten ssh'
+
+# --- end kitty SSH ---
+
 # --- dotfiles repo work tree ---
 # Exit if not running interactively
 [[ $- != *i* ]] && return
