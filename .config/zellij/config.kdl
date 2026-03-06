@@ -1,0 +1,35 @@
+// Zellij Configuration - Catppuccin Macchiato
+theme "catppuccin-macchiato"
+
+// Beginner-friendly Alt-key shortcuts (defaults preserved)
+keybinds {
+    normal {
+        bind "Alt n" { NewPane; }
+        bind "Alt t" { NewTab; }
+        bind "Alt w" { CloseFocus; }
+        bind "Alt f" { ToggleFloatingPanes; }
+        bind "Alt Left" { MoveFocusOrTab "Left"; }
+        bind "Alt Right" { MoveFocusOrTab "Right"; }
+        bind "Alt Up" { MoveFocus "Up"; }
+        bind "Alt Down" { MoveFocus "Down"; }
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt 9" { GoToTab 9; }
+    }
+}
+
+ui {
+    pane_frames {
+        rounded_corners true
+    }
+}
+
+copy_on_select true
+scroll_buffer_size 10000
+default_layout "default"

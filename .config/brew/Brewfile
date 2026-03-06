@@ -40,6 +40,15 @@ brew "wget"
 brew "xclip"
 brew "zlib"
 brew "zoxide"
+brew "zellij"
+brew "lazydocker"
+brew "navi"
+brew "direnv"
+brew "btop"
+brew "dust"
+brew "duf"
+brew "glow"
+brew "procs"
 # ------
 # Casks
 # ------

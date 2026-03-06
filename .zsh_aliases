@@ -64,3 +64,62 @@ alias tree=lt
 alias typora="open -a typora"
 # --- end Typora ---
 
+# --- New tool replacements ---
+alias top='btop'
+alias du='dust'
+alias df='duf'
+alias md='glow'
+alias ps='procs'
+alias lzd='lazydocker'
+# --- end tool replacements ---
+
+# --- Utility ---
+alias reload='source ~/.zshrc'
+alias path='echo $PATH | tr ":" "\n"'
+alias localip='ifconfig en0 | grep "inet " | awk "{print \$2}"'
+# --- end utility ---
+
+# --- Dashboard companions ---
+# Jump to project N from the dashboard's recent projects list
+p() {
+  local projects_dir="$HOME/Developer/Projects"
+  [[ -d "$projects_dir" ]] || { echo "Projects directory not found"; return 1; }
+  local target=$(for dir in "$projects_dir"/*/; do
+    [[ -d "$dir" ]] && stat -f "%m %N" "$dir"
+  done | sort -rn | sed -n "${1:-1}p" | cut -d' ' -f2-)
+  [[ -n "$target" ]] && cd "$target" || echo "Project $1 not found"
+}
+
+# Show a random tip, optionally filtered by category
+tip() {
+  local tips_file="$HOME/.config/zsh/tips/tips.json"
+  [[ -f "$tips_file" ]] || { echo "Tips file not found"; return 1; }
+  command -v jq &>/dev/null || { echo "jq required"; return 1; }
+
+  local RST=$'\e[0m' BOLD=$'\e[1m'
+  local GREEN=$'\e[38;2;166;218;149m' YELLOW=$'\e[38;2;238;212;159m'
+  local MAUVE=$'\e[38;2;198;160;246m' PEACH=$'\e[38;2;245;169;127m'
+  local SUBTEXT=$'\e[38;2;165;173;203m'
+
+  local tip count
+  if [[ -n "$1" ]]; then
+    count=$(jq -r --arg cat "$1" '[.[] | select(.category == $cat)] | length' "$tips_file")
+    (( count == 0 )) && { echo "No tips for category: $1 (try: unix, vim, zsh, fzf, git, tools, zellij)"; return 1; }
+    local idx=$(( RANDOM % count ))
+    tip=$(jq -r --arg cat "$1" --argjson idx "$idx" '[.[] | select(.category == $cat)][$idx]' "$tips_file")
+  else
+    count=$(jq 'length' "$tips_file")
+    tip=$(jq ".[$((RANDOM % count))]" "$tips_file")
+  fi
+
+  local category=$(echo "$tip" | jq -r '.category')
+  local title=$(echo "$tip" | jq -r '.title')
+  local cmd=$(echo "$tip" | jq -r '.command')
+  local explanation=$(echo "$tip" | jq -r '.explanation')
+
+  printf "\n  ${MAUVE}[%s]${RST} ${BOLD}${YELLOW}%s${RST}\n" "$category" "$title"
+  printf "  ${GREEN}%s${RST}\n" "$cmd"
+  printf "  ${SUBTEXT}%s${RST}\n\n" "$explanation"
+}
+# --- end dashboard companions ---
+

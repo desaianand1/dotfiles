@@ -1,5 +1,5 @@
-# Run fastfetch
-fastfetch
+# Run terminal dashboard
+source "${HOME}/.config/zsh/dashboard.zsh"
 
 # Enable Powerlevel10k instant prompt
 # Should stay close to the top of ~/.zshrc.
@@ -27,15 +27,20 @@ if ! zgenom saved; then
     zgenom save
 fi
 
+# Lazy-load version managers (pyenv, nvm, rbenv)
+source "${HOME}/.config/zsh/lazy-load.zsh"
+
 # Load aliases
 source $HOME/.zsh_aliases
 
-# Other interactive shell configurations
+# Tool integrations
 eval $(thefuck --alias)
 source <(fx --comp zsh)
 eval "$(zoxide init zsh --cmd cd)"
 eval "$(fzf --zsh)"
 source "${HOME}/.config/fzf/fzf-git.sh"
+command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
+command -v navi &>/dev/null && eval "$(navi widget zsh)"
 
 # fzf catppuccin macchiato theme
 export FZF_DEFAULT_OPTS=" \
@@ -48,4 +53,9 @@ HISTORY_IGNORE="(doppler secrets set*)"
 
 # Load Powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Auto-start zellij (attach to existing session or create new one)
+if command -v zellij &>/dev/null && [[ -z "$ZELLIJ" ]]; then
+  zellij attach --create default
+fi
 

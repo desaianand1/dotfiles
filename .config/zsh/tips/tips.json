@@ -1,0 +1,302 @@
+[
+  {
+    "category": "unix",
+    "title": "Pipe to multiple commands with tee",
+    "command": "command | tee output.txt | grep 'pattern'",
+    "explanation": "tee splits output: writes to a file AND passes through to the next pipe. Great for logging while processing."
+  },
+  {
+    "category": "unix",
+    "title": "Process substitution",
+    "command": "diff <(sort file1.txt) <(sort file2.txt)",
+    "explanation": "<(cmd) creates a temporary file-like stream from a command's output. Compare outputs without temp files."
+  },
+  {
+    "category": "unix",
+    "title": "Parallel execution with xargs",
+    "command": "find . -name '*.png' | xargs -P 4 -I {} optipng {}",
+    "explanation": "-P 4 runs 4 processes in parallel. -I {} replaces {} with each input. Dramatically speeds up batch operations."
+  },
+  {
+    "category": "unix",
+    "title": "Redirect stderr separately",
+    "command": "command 2>/dev/null    command 2>&1 | grep err    command &>file.log",
+    "explanation": "2>/dev/null silences errors. 2>&1 merges stderr into stdout for piping. &> redirects both to a file."
+  },
+  {
+    "category": "unix",
+    "title": "Find and execute in one command",
+    "command": "find . -name '*.log' -mtime +30 -exec rm {} +",
+    "explanation": "-exec with + batches files for efficiency. -mtime +30 means older than 30 days. Safer than piping to xargs."
+  },
+  {
+    "category": "unix",
+    "title": "Extract columns with awk",
+    "command": "awk -F',' '{print $2, $4}' data.csv",
+    "explanation": "-F sets the delimiter. $1,$2... are columns. Use with any delimited data — logs, CSVs, command output."
+  },
+  {
+    "category": "unix",
+    "title": "Watch a command repeatedly",
+    "command": "watch -n 2 'docker ps --format \"table {{.Names}}\\t{{.Status}}\"'",
+    "explanation": "Runs a command every N seconds and shows the output. Great for monitoring processes, disk space, or containers."
+  },
+  {
+    "category": "unix",
+    "title": "chmod numeric shorthand",
+    "command": "chmod 755 script.sh    # rwxr-xr-x (owner: all, group/other: read+execute)",
+    "explanation": "4=read, 2=write, 1=execute. Add them: 7=rwx, 5=rx, 6=rw. Three digits: owner, group, others."
+  },
+  {
+    "category": "vim",
+    "title": "Change inner text objects",
+    "command": "ciw  ci\"  ci(  ci{  cit",
+    "explanation": "c=change, i=inner. ciw changes word, ci\" changes inside quotes, ci( inside parens, cit inside HTML tags. Muscle memory gold."
+  },
+  {
+    "category": "vim",
+    "title": "Visual block mode for column editing",
+    "command": "Ctrl+V → select column → I → type text → Esc",
+    "explanation": "Ctrl+V enters visual block mode. Select a column, then I to insert at the start of every selected line. Great for adding prefixes."
+  },
+  {
+    "category": "vim",
+    "title": "Record and replay macros",
+    "command": "qa (record to 'a') → do actions → q (stop) → @a (replay) → 10@a (replay 10x)",
+    "explanation": "Record a sequence of edits, then replay it. Perfect for repetitive transformations across multiple lines."
+  },
+  {
+    "category": "vim",
+    "title": "Marks for jumping between locations",
+    "command": "ma (set mark 'a') → 'a (jump to mark) → '' (jump back to previous position)",
+    "explanation": "Lowercase marks are per-file. Uppercase marks (mA) are global — jump across files. Use '. to jump to last edit."
+  },
+  {
+    "category": "vim",
+    "title": "Delete all matching lines with :g",
+    "command": ":g/pattern/d    :v/pattern/d (delete NON-matching lines)",
+    "explanation": ":g runs a command on all matching lines. :g/TODO/d deletes all TODOs. :v is the inverse — keeps only matches."
+  },
+  {
+    "category": "vim",
+    "title": "Named registers for multiple clipboards",
+    "command": "\"ayy (yank line to register 'a') → \"ap (paste from 'a') → :reg (see all registers)",
+    "explanation": "Vim has 26 named registers (a-z). Yank different things to different registers. \"+y copies to system clipboard."
+  },
+  {
+    "category": "zsh",
+    "title": "Glob qualifiers for filtering",
+    "command": "ls *(.)    ls *(/)    ls *(.mh-1)    ls *(Lk+100)",
+    "explanation": "(.) files only, (/) dirs only, (.mh-1) files modified in last hour, (Lk+100) files larger than 100KB. Zsh superpower."
+  },
+  {
+    "category": "zsh",
+    "title": "History expansion shortcuts",
+    "command": "!!    !$    !^    !:2    !:gs/old/new/",
+    "explanation": "!! = last command, !$ = last argument, !^ = first arg, !:2 = second arg, !:gs/old/new/ = substitute in last command."
+  },
+  {
+    "category": "zsh",
+    "title": "Parameter expansion for paths",
+    "command": "${var:h} (dirname)    ${var:t} (basename)    ${var:r} (remove extension)    ${var:e} (extension only)",
+    "explanation": "Built-in path manipulation without calling dirname/basename. x=/foo/bar.txt → ${x:h}=/foo, ${x:t}=bar.txt, ${x:r}=/foo/bar"
+  },
+  {
+    "category": "zsh",
+    "title": "Brace expansion for bulk operations",
+    "command": "mkdir -p project/{src,test,docs}/{main,utils}",
+    "explanation": "Creates all combinations: project/src/main, project/src/utils, project/test/main, etc. Works with cp, mv, touch too."
+  },
+  {
+    "category": "zsh",
+    "title": "Suffix aliases to open files by extension",
+    "command": "alias -s md=glow    alias -s json=fx    alias -s py=nvim",
+    "explanation": "Type a filename and zsh opens it with the associated program. 'readme.md' opens in glow. 'data.json' opens in fx."
+  },
+  {
+    "category": "zsh",
+    "title": "Auto-cd by just typing directory names",
+    "command": "setopt AUTO_CD    # then just type: Documents (instead of cd Documents)",
+    "explanation": "With AUTO_CD enabled, typing a directory name acts like cd. Combined with zoxide, you rarely need to type 'cd' at all."
+  },
+  {
+    "category": "zsh",
+    "title": "Vim mode in your terminal",
+    "command": "bindkey -v    # then: Esc to enter normal mode, / to search, v to edit in $EDITOR",
+    "explanation": "Full vim keybindings at your prompt. Press Esc, then use w/b/0/$ to navigate, dd to clear line, / to search history."
+  },
+  {
+    "category": "fzf",
+    "title": "Insert file paths with Ctrl+T",
+    "command": "vim <Ctrl+T> → search for file → Enter inserts path at cursor",
+    "explanation": "Type any partial path, fzf fuzzy-finds it, and pastes the full path. Works mid-command — type 'cat ' then Ctrl+T."
+  },
+  {
+    "category": "fzf",
+    "title": "Fuzzy search command history",
+    "command": "Ctrl+R → type fragments of a past command → Enter to run it",
+    "explanation": "Way better than pressing up arrow repeatedly. Search by any part of the command. Matching is fuzzy — 'dock up' finds 'docker compose up'."
+  },
+  {
+    "category": "fzf",
+    "title": "Fuzzy cd into subdirectory",
+    "command": "Alt+C → type partial directory name → Enter to cd into it",
+    "explanation": "Instantly jump into any nested subdirectory without typing the full path. Searches recursively from current directory."
+  },
+  {
+    "category": "fzf",
+    "title": "fzf-git: browse branches and commits",
+    "command": "Ctrl+G Ctrl+B (branches)    Ctrl+G Ctrl+H (commit hashes)    Ctrl+G Ctrl+F (files)",
+    "explanation": "Your fzf-git integration adds powerful git browsing. Ctrl+G is the prefix, then B/H/F/R/S for branches/hashes/files/remotes/stashes."
+  },
+  {
+    "category": "fzf",
+    "title": "Preview files with bat in fzf",
+    "command": "fzf --preview 'bat --color=always {}'    # or use your fcat alias",
+    "explanation": "Your 'fcat' alias already does this! It opens fzf with syntax-highlighted previews. Great for finding files by content."
+  },
+  {
+    "category": "git",
+    "title": "Interactive rebase to clean up commits",
+    "command": "git rebase -i HEAD~5",
+    "explanation": "Reorder, squash, edit, or drop your last 5 commits. Use 'squash' to combine related commits before pushing. Opens in your editor."
+  },
+  {
+    "category": "git",
+    "title": "Binary search for bugs with bisect",
+    "command": "git bisect start → git bisect bad → git bisect good <commit> → test → git bisect good/bad",
+    "explanation": "Git checks out commits in binary search order. You say good/bad at each step. Finds the exact commit that introduced a bug in O(log n) steps."
+  },
+  {
+    "category": "git",
+    "title": "Recover lost commits with reflog",
+    "command": "git reflog    # then: git checkout <hash> or git cherry-pick <hash>",
+    "explanation": "reflog records every HEAD movement for 90 days. Accidentally reset --hard? Force-pushed over work? reflog has your commits."
+  },
+  {
+    "category": "git",
+    "title": "Named stashes for clarity",
+    "command": "git stash push -m 'WIP: auth refactor'    git stash list    git stash pop stash@{2}",
+    "explanation": "Name your stashes so you remember what they contain. 'git stash list' shows all. Pop a specific one by index."
+  },
+  {
+    "category": "git",
+    "title": "Parallel checkouts with worktrees",
+    "command": "git worktree add ../hotfix-branch hotfix    # work on both branches simultaneously",
+    "explanation": "Creates a separate directory for another branch. No more stashing to switch branches. Each worktree is a full checkout."
+  },
+  {
+    "category": "git",
+    "title": "Blame with line range",
+    "command": "git blame -L 10,20 src/app.py    git blame -L '/function auth/,+10' src/app.py",
+    "explanation": "Focus blame on specific lines. -L takes line numbers or regex patterns. Find who last changed a specific function."
+  },
+  {
+    "category": "git",
+    "title": "Search for when code was added or removed",
+    "command": "git log -S 'function_name' --oneline    git log -G 'regex_pattern' --oneline",
+    "explanation": "-S (pickaxe) finds commits that changed the number of occurrences. -G finds commits where the diff matches a regex."
+  },
+  {
+    "category": "git",
+    "title": "Word-level diff instead of line-level",
+    "command": "git diff --word-diff    git diff --word-diff=color",
+    "explanation": "Highlights exactly which words changed within a line, instead of showing the whole line as changed. Much easier to read small edits."
+  },
+  {
+    "category": "git",
+    "title": "Cherry-pick specific commits",
+    "command": "git cherry-pick abc123    git cherry-pick abc123..def456    git cherry-pick --no-commit abc123",
+    "explanation": "Apply specific commits from another branch to your current branch. --no-commit stages changes without committing (for combining)."
+  },
+  {
+    "category": "git",
+    "title": "Auto-resolve repeated conflicts with rerere",
+    "command": "git config --global rerere.enabled true",
+    "explanation": "rerere (reuse recorded resolution) remembers how you resolved conflicts. If the same conflict appears again, git resolves it automatically."
+  },
+  {
+    "category": "tools",
+    "title": "bat: view git changes with syntax highlighting",
+    "command": "bat --diff file.py    bat -A file.py (show invisible chars)",
+    "explanation": "bat --diff shows git changes inline with syntax highlighting. bat -A reveals tabs, spaces, and line endings — great for debugging whitespace."
+  },
+  {
+    "category": "tools",
+    "title": "eza: see git status in directory listings",
+    "command": "eza -l --git    # already aliased to 'ls' with --git flag",
+    "explanation": "Your ls alias already shows git status per file (M=modified, N=new). Add --git-repos to see repo status for directories."
+  },
+  {
+    "category": "tools",
+    "title": "ast-grep: structural code search",
+    "command": "ast-grep -p 'console.log($$$)' -l js    ast-grep -p 'if ($COND) { return $RET }' -l ts",
+    "explanation": "Searches code by structure, not text. $$$ matches any arguments. $NAME matches single nodes. Better than grep for refactoring."
+  },
+  {
+    "category": "tools",
+    "title": "fx: interactive JSON exploration",
+    "command": "curl api.example.com/data | fx    cat data.json | fx '.items[0].name'",
+    "explanation": "Pipe any JSON to fx for interactive browsing. Use JS expressions to filter. Arrow keys to navigate, 'q' to quit."
+  },
+  {
+    "category": "tools",
+    "title": "howdoi: instant Stack Overflow answers",
+    "command": "howdoi convert csv to json python    howdoi -a reverse linked list",
+    "explanation": "Fetches the top-voted answer from Stack Overflow. -a shows the full answer. -n 3 shows multiple answers."
+  },
+  {
+    "category": "tools",
+    "title": "zoxide: smart directory jumping",
+    "command": "z foo (jump to most-used dir matching 'foo')    z foo bar (match both)    zi (interactive with fzf)",
+    "explanation": "Learns from your cd patterns using frecency (frequency + recency). 'z proj' might jump to ~/Developer/Projects if that's where you go most."
+  },
+  {
+    "category": "tools",
+    "title": "delta: your git diff viewer",
+    "command": "git diff    git log -p    git show HEAD",
+    "explanation": "delta is already configured as your git pager! You get side-by-side diffs, syntax highlighting, and line numbers automatically."
+  },
+  {
+    "category": "tools",
+    "title": "navi: interactive cheatsheet browser",
+    "command": "Ctrl+G → search for what you want to do → select → command fills your terminal",
+    "explanation": "Press Ctrl+G anytime to search cheatsheets. Pick a command and navi fills in the template. You fill in the blanks."
+  },
+  {
+    "category": "zellij",
+    "title": "Zellij modes overview",
+    "command": "Ctrl+P (pane mode)    Ctrl+T (tab mode)    Ctrl+N (resize)    Ctrl+S (scroll)    Ctrl+G (lock)",
+    "explanation": "Zellij uses modes like vim. Enter a mode, do your action, then Esc back to normal. The status bar always shows available keys."
+  },
+  {
+    "category": "zellij",
+    "title": "Quick pane splitting",
+    "command": "Alt+N (new pane)    Alt+Arrows (navigate)    Alt+W (close pane)",
+    "explanation": "Your config has Alt-shortcuts for common actions. Alt+N splits the current pane. Navigate between panes with Alt+Arrow keys."
+  },
+  {
+    "category": "zellij",
+    "title": "Floating panes for quick commands",
+    "command": "Alt+F (toggle floating pane)",
+    "explanation": "Opens a floating pane over your current layout. Great for running a quick command without rearranging your workspace. Alt+F again to dismiss."
+  },
+  {
+    "category": "zellij",
+    "title": "Tab management",
+    "command": "Alt+T (new tab)    Alt+1-9 (switch tabs)    Ctrl+T then r (rename tab)",
+    "explanation": "Tabs are like workspaces. Create one per project or task. Alt+1-9 for instant switching. Rename with Ctrl+T then r."
+  },
+  {
+    "category": "zellij",
+    "title": "Session management",
+    "command": "zellij ls    zellij attach <name>    zellij kill-session <name>    zellij delete-session <name>",
+    "explanation": "Sessions persist when you close the terminal. 'zellij ls' shows active sessions. Your config auto-attaches to the 'default' session."
+  },
+  {
+    "category": "zellij",
+    "title": "Lock mode for nested terminals",
+    "command": "Ctrl+G (enter lock mode)    Ctrl+G again (exit lock mode)",
+    "explanation": "Lock mode passes ALL keybindings to the inner program. Use when running vim, htop, or another app that conflicts with zellij shortcuts."
+  }
+]
