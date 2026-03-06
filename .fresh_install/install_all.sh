@@ -10,6 +10,7 @@ scripts=(
     "install_readarr.sh"
     "install_spicetify_marketplace.sh"
     "install_calibre_web.sh"
+    "install_zellij_plugins.sh"
 )
 
 for script in "${scripts[@]}"; do

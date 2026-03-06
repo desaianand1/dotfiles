@@ -298,5 +298,95 @@
     "title": "Lock mode for nested terminals",
     "command": "Ctrl+G (enter lock mode)    Ctrl+G again (exit lock mode)",
     "explanation": "Lock mode passes ALL keybindings to the inner program. Use when running vim, htop, or another app that conflicts with zellij shortcuts."
+  },
+  {
+    "category": "docker",
+    "title": "Clean up all unused Docker resources",
+    "command": "docker system prune -a --volumes",
+    "explanation": "Removes all stopped containers, unused networks, dangling images, and volumes. Add -a to also remove unused images. Reclaims disk space fast."
+  },
+  {
+    "category": "docker",
+    "title": "Interactive shell inside a running container",
+    "command": "docker exec -it <container> /bin/sh    # or /bin/bash if available",
+    "explanation": "Opens an interactive shell inside a running container. Use for debugging, checking logs, or inspecting the filesystem. Exit with 'exit' or Ctrl+D."
+  },
+  {
+    "category": "docker",
+    "title": "Follow compose logs with filtering",
+    "command": "docker compose logs -f --tail=50 <service>",
+    "explanation": "-f follows live output, --tail=50 shows last 50 lines. Specify a service name to filter. Without a name, shows all services interleaved."
+  },
+  {
+    "category": "docker",
+    "title": "Build without cache for clean rebuilds",
+    "command": "docker build --no-cache -t myapp .    docker compose build --no-cache",
+    "explanation": "Forces Docker to rebuild every layer from scratch. Useful when a cached layer has stale dependencies or you changed a base image."
+  },
+  {
+    "category": "ssh",
+    "title": "SSH tunneling for local port forwarding",
+    "command": "ssh -L 8080:localhost:3000 user@remote",
+    "explanation": "Forwards local port 8080 to remote port 3000. Access remote services at localhost:8080. Great for databases or admin panels behind firewalls."
+  },
+  {
+    "category": "ssh",
+    "title": "Jump through a bastion host",
+    "command": "ssh -J bastion@jump-host user@internal-host",
+    "explanation": "ProxyJump (-J) chains through an intermediate host. No need to SSH twice manually. Add 'ProxyJump bastion' to ~/.ssh/config for permanent setup."
+  },
+  {
+    "category": "ssh",
+    "title": "Fast file transfer with compression",
+    "command": "scp -C file.tar.gz user@host:/path/    rsync -avz --progress src/ user@host:dest/",
+    "explanation": "scp -C enables compression. rsync -z compresses too, but also does incremental transfers — only sends changed bytes. rsync is almost always better."
+  },
+  {
+    "category": "ssh",
+    "title": "Copy your SSH key to a remote server",
+    "command": "ssh-copy-id user@remote-host",
+    "explanation": "Installs your public key on the remote server's authorized_keys. After this, SSH login works without a password. Uses your default key (~/.ssh/id_ed25519.pub)."
+  },
+  {
+    "category": "macos",
+    "title": "Clipboard from the terminal with pbcopy/pbpaste",
+    "command": "echo 'hello' | pbcopy    pbpaste > file.txt    cat file.txt | pbcopy",
+    "explanation": "pbcopy copies stdin to clipboard, pbpaste outputs clipboard contents. Pipe between terminal and GUI apps seamlessly."
+  },
+  {
+    "category": "macos",
+    "title": "Quick Look preview from terminal",
+    "command": "qlmanage -p file.pdf    qlmanage -p image.png",
+    "explanation": "Opens macOS Quick Look preview for any file type. Works with PDFs, images, code files, and anything Quick Look supports. Press Space to dismiss."
+  },
+  {
+    "category": "macos",
+    "title": "Open any app or URL from terminal",
+    "command": "open -a 'Visual Studio Code' .    open https://github.com    open .",
+    "explanation": "open -a launches a specific app. Without -a, opens files with their default app. 'open .' opens current directory in Finder."
+  },
+  {
+    "category": "macos",
+    "title": "Change hidden macOS settings with defaults",
+    "command": "defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder",
+    "explanation": "defaults read/write controls macOS preferences not in System Settings. Show hidden files, change Dock behavior, screenshot format, and more."
+  },
+  {
+    "category": "tailscale",
+    "title": "SSH to any device on your tailnet",
+    "command": "tailscale ssh user@device-name    # or use: ssh device-name (if in SSH config)",
+    "explanation": "Tailscale SSH works without managing SSH keys — uses your Tailscale identity. Enable in admin console. Your tsssh alias does this too."
+  },
+  {
+    "category": "tailscale",
+    "title": "Send files between devices",
+    "command": "tailscale file cp myfile.txt device-name:    tailscale file get .",
+    "explanation": "Direct peer-to-peer file transfer between any devices on your tailnet. No cloud upload needed. Receiver runs 'tailscale file get' to accept."
+  },
+  {
+    "category": "tailscale",
+    "title": "Check tailnet device status",
+    "command": "tailscale status    tailscale status --json | jq '.Peer[] | {name: .DNSName, online: .Online}'",
+    "explanation": "See all devices on your tailnet, their IPs, and online status. Pipe through jq for a clean view of specific fields."
   }
 ]

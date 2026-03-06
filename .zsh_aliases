@@ -1,9 +1,12 @@
 # --- [IMPORTANT] kitty terminal workaround for SSH xterm compatibility ---
-# See for context: https://github.com/kovidgoyal/kitty/issues/713#issuecomment-750704294
-#
-
-alias ssh='kitty +kitten ssh'
-
+# Uses kitty kitten only when inside kitty terminal
+ssh() {
+  if [[ "$TERM" == "xterm-kitty" ]]; then
+    kitty +kitten ssh "$@"
+  else
+    command ssh "$@"
+  fi
+}
 # --- end kitty SSH ---
 
 # --- dotfiles repo work tree ---
@@ -15,7 +18,7 @@ alias dotfiles='/usr/bin/git --git-dir=/Users/anand/dotfiles/ --work-tree=/Users
 # -- end dotfiles ---
 
 # --- custom ---
-alias projects='${HOME}/Developer/Projects/'
+alias projects='cd ${HOME}/Developer/Projects/'
 # --- end custom ---
 
 # --- bat ---
@@ -26,7 +29,16 @@ alias cat='bat'
 alias fcat='fzf --preview "bat --color=always {}" --preview-window "~3"'
 # --- end fzf ---
 
+# --- Suffix aliases (type a filename to open with associated program) ---
+alias -s md=glow
+alias -s json=fx
+alias -s {py,rs,go,ts,js,sh,zsh}=nvim
+alias -s {yaml,yml,toml}=nvim
+# --- end suffix aliases ---
+
 # --- eza ---
+EZA_ENABLE_SORT_ALIASES=1
+
 if ! type eza >/dev/null 2>&1; then
   print 'eza not found. Please install eza before using this plugin or use the zsh-ls plugin.' >&2
   return 1
@@ -73,11 +85,29 @@ alias ps='procs'
 alias lzd='lazydocker'
 # --- end tool replacements ---
 
+# --- Tailscale ---
+alias ts='tailscale'
+alias tss='tailscale status'
+alias tsip='tailscale ip'
+alias tsssh='tailscale ssh'
+# --- end Tailscale ---
+
 # --- Utility ---
 alias reload='source ~/.zshrc'
 alias path='echo $PATH | tr ":" "\n"'
 alias localip='ifconfig en0 | grep "inet " | awk "{print \$2}"'
 # --- end utility ---
+
+# --- yazi (cd to directory on exit) ---
+y() {
+  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}
+# --- end yazi ---
 
 # --- Dashboard companions ---
 # Jump to project N from the dashboard's recent projects list
@@ -104,7 +134,7 @@ tip() {
   local tip count
   if [[ -n "$1" ]]; then
     count=$(jq -r --arg cat "$1" '[.[] | select(.category == $cat)] | length' "$tips_file")
-    (( count == 0 )) && { echo "No tips for category: $1 (try: unix, vim, zsh, fzf, git, tools, zellij)"; return 1; }
+    (( count == 0 )) && { echo "No tips for category: $1 (try: unix, vim, zsh, fzf, git, tools, zellij, docker, ssh, macos, tailscale)"; return 1; }
     local idx=$(( RANDOM % count ))
     tip=$(jq -r --arg cat "$1" --argjson idx "$idx" '[.[] | select(.category == $cat)][$idx]' "$tips_file")
   else

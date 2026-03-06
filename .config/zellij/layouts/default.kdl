@@ -1,9 +1,37 @@
 layout {
-    pane size=1 borderless=true {
-        plugin location="compact-bar"
-    }
-    pane
-    pane size=1 borderless=true {
-        plugin location="status-bar"
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+                // Catppuccin Macchiato
+                format_left  "{mode}#[bg=#24273a] {tabs}"
+                format_center ""
+                format_right "#[bg=#24273a,fg=#a5adcb]#[bg=#363a4f,fg=#cad3f5]  {datetime} "
+                format_space "#[bg=#24273a]"
+
+                mode_normal        "#[bg=#a6da95,fg=#24273a,bold]  NORMAL "
+                mode_locked        "#[bg=#ed8796,fg=#24273a,bold]  LOCKED "
+                mode_resize        "#[bg=#eed49f,fg=#24273a,bold] 󰩨 RESIZE "
+                mode_pane          "#[bg=#8aadf4,fg=#24273a,bold]  PANE "
+                mode_tab           "#[bg=#c6a0f6,fg=#24273a,bold] 󰓩 TAB "
+                mode_scroll        "#[bg=#f5bde6,fg=#24273a,bold]  SCROLL "
+                mode_enter_search  "#[bg=#f5a97f,fg=#24273a,bold]  SEARCH "
+                mode_search        "#[bg=#f5a97f,fg=#24273a,bold]  SEARCH "
+                mode_session       "#[bg=#f4dbd6,fg=#24273a,bold]  SESSION "
+                mode_move          "#[bg=#8bd5ca,fg=#24273a,bold] 󰆾 MOVE "
+                mode_tmux          "#[bg=#c6a0f6,fg=#24273a,bold]  TMUX "
+
+                tab_normal              "#[bg=#363a4f,fg=#a5adcb] {index}:{name} "
+                tab_normal_fullscreen   "#[bg=#363a4f,fg=#a5adcb] {index}:{name} [] "
+                tab_normal_sync         "#[bg=#363a4f,fg=#a5adcb] {index}:{name} <> "
+                tab_active              "#[bg=#c6a0f6,fg=#24273a,bold] {index}:{name} "
+                tab_active_fullscreen   "#[bg=#c6a0f6,fg=#24273a,bold] {index}:{name} [] "
+                tab_active_sync         "#[bg=#c6a0f6,fg=#24273a,bold] {index}:{name} <> "
+
+                datetime          "#[fg=#cad3f5,bold]{format}"
+                datetime_format   "%H:%M  %b %d"
+                datetime_timezone "America/New_York"
+            }
+        }
+        children
     }
 }
