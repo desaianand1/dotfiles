@@ -1,6 +1,17 @@
+# Suppress p10k instant prompt warning (fastfetch + tip output during init)
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
 # Enable Powerlevel10k instant prompt (must be near top)
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Ensure compinit is available before plugins that need compdef
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
 fi
 
 # Load zgenom
@@ -20,9 +31,6 @@ if ! zgenom saved; then
     zgenom save
 fi
 
-# Lazy-load version managers (pyenv, nvm, rbenv)
-source "${HOME}/.config/zsh/lazy-load.zsh"
-
 # Load aliases
 source "$HOME/.zsh_aliases"
 
@@ -35,7 +43,7 @@ if [[ ! -f "$_fx_comp_cache" ]] || [[ "$(command -v fx)" -nt "$_fx_comp_cache" ]
 fi
 [[ -f "$_fx_comp_cache" ]] && source "$_fx_comp_cache"
 
-eval "$(zoxide init zsh --cmd cd)"
+eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
 source "${HOME}/.config/fzf/fzf-git.sh"
 command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
@@ -66,11 +74,7 @@ zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcach
 # Load Powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Run terminal dashboard
-source "${HOME}/.config/zsh/dashboard.zsh"
-
-# Auto-start zellij (attach to existing session or create new one)
-if command -v zellij &>/dev/null && [[ -z "$ZELLIJ" ]]; then
-  zellij attach --create default
-fi
+# Startup display
+fastfetch
+tip
 

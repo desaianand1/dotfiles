@@ -109,17 +109,7 @@ y() {
 }
 # --- end yazi ---
 
-# --- Dashboard companions ---
-# Jump to project N from the dashboard's recent projects list
-p() {
-  local projects_dir="$HOME/Developer/Projects"
-  [[ -d "$projects_dir" ]] || { echo "Projects directory not found"; return 1; }
-  local target=$(for dir in "$projects_dir"/*/; do
-    [[ -d "$dir" ]] && stat -f "%m %N" "$dir"
-  done | sort -rn | sed -n "${1:-1}p" | cut -d' ' -f2-)
-  [[ -n "$target" ]] && cd "$target" || echo "Project $1 not found"
-}
-
+# --- Tips ---
 # Show a random tip, optionally filtered by category
 tip() {
   local tips_file="$HOME/.config/zsh/tips/tips.json"
@@ -151,5 +141,5 @@ tip() {
   printf "  ${GREEN}%s${RST}\n" "$cmd"
   printf "  ${SUBTEXT}%s${RST}\n\n" "$explanation"
 }
-# --- end dashboard companions ---
+# --- end tips ---
 
