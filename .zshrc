@@ -1,10 +1,5 @@
-# Suppress p10k instant prompt warning (fastfetch + tip output during init)
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-
-# Enable Powerlevel10k instant prompt (must be near top)
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# Disable instant prompt (fastfetch + tip produce output during init)
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 
 # Ensure compinit is available before plugins that need compdef
 autoload -Uz compinit
@@ -77,4 +72,3 @@ zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcach
 # Startup display
 fastfetch
 tip
-

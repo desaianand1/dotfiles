@@ -9,12 +9,8 @@ ssh() {
 }
 # --- end kitty SSH ---
 
-# --- dotfiles repo work tree ---
-# Exit if not running interactively
-[[ $- != *i* ]] && return
-
 # --- dotfiles ---
-alias dotfiles='/usr/bin/git --git-dir=/Users/anand/dotfiles/ --work-tree=/Users/anand'
+alias dotfiles='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
 # -- end dotfiles ---
 
 # --- custom ---
