@@ -38,6 +38,9 @@ if [[ ! -f "$_fx_comp_cache" ]] || [[ "$(command -v fx)" -nt "$_fx_comp_cache" ]
 fi
 [[ -f "$_fx_comp_cache" ]] && source "$_fx_comp_cache"
 
+# bun completions
+[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
+
 eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
 source "${HOME}/.config/fzf/fzf-git.sh"
@@ -72,3 +75,4 @@ zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcach
 # Startup display
 fastfetch
 tip
+
