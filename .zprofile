@@ -12,10 +12,6 @@ if command -v pyenv-virtualenv-init > /dev/null 2>&1; then
     eval "$(pyenv virtualenv-init -)"
 fi
 
-# NVM
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
 # rbenv
 if command -v rbenv 1>/dev/null 2>&1; then
     eval "$(rbenv init - zsh)"

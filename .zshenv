@@ -3,7 +3,6 @@ export PATH="/usr/local/opt/tcl-tk/bin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 export JAVA_HOME=/opt/homebrew/opt/openjdk
 export PATH="$PATH:$HOME/.spicetify"
-export NVM_DIR="$HOME/.nvm"
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 export PATH=$HOME/Developer/flutter/bin:$PATH
 export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
@@ -18,3 +17,6 @@ esac
 export PATH="$PATH:$HOME/.local/bin"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Vite+ bin (https://viteplus.dev)
+. "/Users/anand/.config/vite-plus/env"
