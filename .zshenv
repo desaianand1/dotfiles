@@ -9,14 +9,12 @@ export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH="$PATH":"$HOME/.pub-cache/bin"
-export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
 export PATH="$PATH:$HOME/.local/bin"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Claude Code
+export CLAUDE_CODE_AUTO_COMPACT_WINDOW="200k"
 
 # Vite+ bin (https://viteplus.dev)
 . "/Users/anand/.config/vite-plus/env"

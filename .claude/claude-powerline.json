@@ -1,5 +1,5 @@
 {
-  "theme": "tokyo-night",
+  "theme": "catppuccin-macchiato",
   "display": {
     "style": "powerline",
     "colorCompatibility": "auto",
@@ -17,17 +17,11 @@
         "showRepoName": true
       },
       "model": { "enabled": true },
+      "effort": { "enabled": true },
       "session": { "enabled": false },
       "block": { "enabled": false },
-      "context": { "enabled": true, "showPercentageOnly": true }
-    }
-  },
-  "colors": {
-    "tokyo-night": {
-      "directory": { "bg": "#1a1b26", "fg": "#c0caf5" },
-      "git": { "bg": "#24283b", "fg": "#9ece6a" },
-      "model": { "bg": "#1a1b26", "fg": "#7aa2f7" },
-      "context": { "bg": "#24283b", "fg": "#bb9af7" }
+      "context": { "enabled": true, "showPercentageOnly": false },
+      "cost": { "enabled": true }
     }
   },
   "modelContextLimits": {
