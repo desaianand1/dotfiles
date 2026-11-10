@@ -198,8 +198,11 @@ if [ -n "$used_pct" ]; then
   fi
 fi
 
-# ── Session cost ─────────────────────────────────────────────
-if [ -n "$cost" ] && [ "$cost" != "0" ] && [ "$cost" != "null" ]; then
+# ── Session cost (only on API billing, not subscription) ─────
+is_subscription="false"
+[ -n "$rl_5h" ] || [ -n "$rl_7d" ] && is_subscription="true"
+
+if [ "$is_subscription" = "false" ] && [ -n "$cost" ] && [ "$cost" != "0" ] && [ "$cost" != "null" ]; then
   out+="$(transition "$prev_bg" surface0)"
   out+="${surface0}${yellow} \$$(fmt_cost "$cost") ${rst}"
   prev_bg="surface0"
