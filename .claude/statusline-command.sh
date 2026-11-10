@@ -9,23 +9,24 @@ input=$(cat)
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
 model=$(echo "$input" | jq -r '.model.display_name // ""')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
-used_tokens=$(echo "$input" | jq -r '.context_window.used_tokens // empty')
-effort=$(echo "$input" | jq -r '.effort // .model.effort // empty')
-cost=$(echo "$input" | jq -r '.cost.total_usd // .session_cost_usd // empty')
+used_tokens=$(echo "$input" | jq -r '.context_window.total_input_tokens // empty')
+effort=$(echo "$input" | jq -r '.effort.level // empty')
+cost=$(echo "$input" | jq -r '.cost.total_cost_usd // empty')
+fast=$(echo "$input" | jq -r '.fast_mode // empty')
 git_worktree=$(echo "$input" | jq -r '.workspace.git_worktree // empty')
 
+rl_5h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
+rl_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+
 # ── Catppuccin Macchiato palette (true color) ────────────────
-# Backgrounds
 base="\033[48;2;36;39;58m"       # #24273a
 mantle="\033[48;2;30;32;48m"     # #1e2030
 surface0="\033[48;2;54;58;79m"   # #363a4f
 
-# Foregrounds
 txt="\033[38;2;202;211;245m"     # #cad3f5
 sub="\033[38;2;165;173;203m"     # #a5adcb
 overlay="\033[38;2;110;115;141m" # #6e738d
 
-# Accents (fg)
 blue="\033[38;2;138;173;244m"    # #8aadf4
 green="\033[38;2;166;218;149m"   # #a6da95
 mauve="\033[38;2;198;160;246m"   # #c6a0f6
@@ -37,13 +38,49 @@ teal="\033[38;2;139;213;202m"    # #8bd5ca
 pink="\033[38;2;245;189;230m"    # #f5bde6
 sky="\033[38;2;145;215;227m"     # #91d7e3
 
-# Transition fg (bg colors as fg for separators)
 base_f="\033[38;2;36;39;58m"
 mantle_f="\033[38;2;30;32;48m"
 surface0_f="\033[38;2;54;58;79m"
 
 rst="\033[0m"
 sep=""
+
+# ── Helpers ──────────────────────────────────────────────────
+fmt_tokens() {
+  local t=$1
+  if [ "$t" -ge 1000000 ] 2>/dev/null; then
+    printf "%.1fM" "$(echo "$t / 1000000" | bc -l)"
+  elif [ "$t" -ge 1000 ] 2>/dev/null; then
+    printf "%.0fK" "$(echo "$t / 1000" | bc -l)"
+  else
+    printf "%s" "$t"
+  fi
+}
+
+fmt_cost() {
+  local c=$1
+  if echo "$c" | grep -qE '^[0-9]+\.?[0-9]*$' 2>/dev/null; then
+    printf "%.2f" "$c"
+  else
+    printf "%s" "$c"
+  fi
+}
+
+transition() {
+  local from=$1 to=$2
+  local from_f to_bg
+  case "$from" in
+    surface0) from_f="$surface0_f" ;;
+    mantle)   from_f="$mantle_f" ;;
+    *)        from_f="$base_f" ;;
+  esac
+  case "$to" in
+    surface0) to_bg="$surface0" ;;
+    mantle)   to_bg="$mantle" ;;
+    *)        to_bg="$base" ;;
+  esac
+  printf "%b" "${to_bg}${from_f}${sep}${rst}"
+}
 
 # ── Directory ────────────────────────────────────────────────
 short_cwd="${cwd/#$HOME/~}"
@@ -107,18 +144,14 @@ fi
 [ -n "$git_worktree" ] && branch="$git_worktree"
 
 if [ -n "$branch" ]; then
-  out+="${mantle}${surface0_f}${sep}${rst}"
+  out+="$(transition "$prev_bg" mantle)"
   out+="${mantle}${green}  ${branch}${git_info} ${rst}"
   prev_bg="mantle"
 fi
 
 # ── Model + Effort ───────────────────────────────────────────
 if [ -n "$model" ]; then
-  if [ "$prev_bg" = "mantle" ]; then
-    out+="${surface0}${mantle_f}${sep}${rst}"
-  else
-    out+="${surface0}${surface0_f}${sep}${rst}"
-  fi
+  out+="$(transition "$prev_bg" surface0)"
 
   effort_str=""
   if [ -n "$effort" ]; then
@@ -131,31 +164,21 @@ if [ -n "$model" ]; then
     esac
   fi
 
-  out+="${surface0}${mauve}󰧑 ${model}${effort_str} ${rst}"
+  fast_str=""
+  if [ "$fast" = "true" ]; then
+    fast_str=" ${sky}🚀"
+  fi
+
+  out+="${surface0}${mauve}󰧑 ${model}${effort_str}${fast_str} ${rst}"
   prev_bg="surface0"
 fi
 
 # ── Context window ───────────────────────────────────────────
-fmt_tokens() {
-  local t=$1
-  if [ "$t" -ge 1000000 ] 2>/dev/null; then
-    printf "%.1fM" "$(echo "$t / 1000000" | bc -l)"
-  elif [ "$t" -ge 1000 ] 2>/dev/null; then
-    printf "%.0fK" "$(echo "$t / 1000" | bc -l)"
-  else
-    printf "%s" "$t"
-  fi
-}
-
 if [ -n "$used_pct" ]; then
   used_int=$(printf '%.0f' "$used_pct")
 
   if [ "$used_int" -gt 0 ]; then
-    if [ "$prev_bg" = "surface0" ]; then
-      out+="${mantle}${surface0_f}${sep}${rst}"
-    else
-      out+="${mantle}${mantle_f}${sep}${rst}"
-    fi
+    out+="$(transition "$prev_bg" mantle)"
 
     if [ "$used_int" -ge 80 ]; then
       c_fg="$red"
@@ -177,23 +200,46 @@ fi
 
 # ── Session cost ─────────────────────────────────────────────
 if [ -n "$cost" ] && [ "$cost" != "0" ] && [ "$cost" != "null" ]; then
-  if [ "$prev_bg" = "mantle" ]; then
-    out+="${surface0}${mantle_f}${sep}${rst}"
-  else
-    out+="${surface0}${surface0_f}${sep}${rst}"
-  fi
-
-  out+="${surface0}${yellow} \$${cost} ${rst}"
+  out+="$(transition "$prev_bg" surface0)"
+  out+="${surface0}${yellow} \$$(fmt_cost "$cost") ${rst}"
   prev_bg="surface0"
 fi
 
-# ── Final cap ────────────────────────────────────────────────
-if [ "$prev_bg" = "surface0" ]; then
-  out+="${surface0_f}${sep}${rst}"
-elif [ "$prev_bg" = "mantle" ]; then
-  out+="${mantle_f}${sep}${rst}"
-else
-  out+="${base_f}${sep}${rst}"
+# ── Rate limits (contextual: only when ≥70%) ─────────────────
+rl_show=""
+rl_worst=0
+rl_label=""
+
+for pair in "5h:${rl_5h:-0}" "7d:${rl_7d:-0}"; do
+  period="${pair%%:*}"
+  pct="${pair#*:}"
+  pct_int=$(printf '%.0f' "$pct" 2>/dev/null || echo 0)
+  if [ "$pct_int" -gt "$rl_worst" ]; then
+    rl_worst="$pct_int"
+    rl_label="${period} ${pct_int}%"
+  fi
+done
+
+if [ "$rl_worst" -ge 70 ]; then
+  out+="$(transition "$prev_bg" mantle)"
+
+  if [ "$rl_worst" -ge 95 ]; then
+    rl_fg="$red"
+    rl_icon="󰀦"
+  else
+    rl_fg="$peach"
+    rl_icon="⏱"
+  fi
+
+  out+="${mantle}${rl_fg}${rl_icon} ${rl_label} ${rst}"
+  prev_bg="mantle"
 fi
+
+# ── Final cap ────────────────────────────────────────────────
+case "$prev_bg" in
+  surface0) out+="${surface0_f}${sep}${rst}" ;;
+  mantle)   out+="${mantle_f}${sep}${rst}" ;;
+  *)        out+="${base_f}${sep}${rst}" ;;
+esac
 
 printf "%b" "$out"
