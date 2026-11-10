@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 # Claude Code statusline — Catppuccin Macchiato, left/right powerline
-# Companion config: ~/.claude/claude-powerline.json
-
 set -euo pipefail
 input=$(cat)
 
-# ── JSON fields ──────────────────────────────────────────────
+# ── JSON ─────────────────────────────────────────────────────
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
 model=$(echo "$input" | jq -r '.model.display_name // ""')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
@@ -13,44 +11,34 @@ used_tokens=$(echo "$input" | jq -r '.context_window.total_input_tokens // empty
 effort=$(echo "$input" | jq -r '.effort.level // empty')
 fast=$(echo "$input" | jq -r '.fast_mode // empty')
 git_worktree=$(echo "$input" | jq -r '.workspace.git_worktree // empty')
-
 rl_5h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 rl_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 
-# ── Catppuccin Macchiato ─────────────────────────────────────
-base="\033[48;2;36;39;58m"
-mantle="\033[48;2;30;32;48m"
-surface0="\033[48;2;54;58;79m"
+# ── Palette (Catppuccin Macchiato) ───────────────────────────
+c_mantle="30;32;48"
+c_surface0="54;58;79"
 
-overlay="\033[38;2;110;115;141m"
-sub="\033[38;2;165;173;203m"
-
-blue="\033[38;2;138;173;244m"
-green="\033[38;2;166;218;149m"
-mauve="\033[38;2;198;160;246m"
-lavender="\033[38;2;183;189;248m"
-yellow="\033[38;2;238;212;159m"
-peach="\033[38;2;245;169;127m"
-red="\033[38;2;237;135;150m"
-teal="\033[38;2;139;213;202m"
-pink="\033[38;2;245;189;230m"
-sky="\033[38;2;145;215;227m"
-
-base_f="\033[38;2;36;39;58m"
-mantle_f="\033[38;2;30;32;48m"
-surface0_f="\033[38;2;54;58;79m"
-
+bg()  { printf "\033[48;2;%sm" "$1"; }
+fg()  { printf "\033[38;2;%sm" "$1"; }
 rst="\033[0m"
 
-# Powerline glyphs
-rsep=""    # left-to-right separator
-lsep=""    # right-to-left opener
-rcap=""    # rounded right cap (end of left side)
-lcap=""    # rounded left cap (start of right side)
+c_blue="138;173;244"
+c_green="166;218;149"
+c_mauve="198;160;246"
+c_lavender="183;189;248"
+c_peach="245;169;127"
+c_red="237;135;150"
+c_teal="139;213;202"
+c_pink="245;189;230"
+c_sky="145;215;227"
+c_overlay="110;115;141"
+c_sub="165;173;203"
+
+sep_r=""
+sep_l=""
 
 cols=$(tput cols 2>/dev/null || echo 120)
 
-# ── Helpers ──────────────────────────────────────────────────
 fmt_tokens() {
   local t=$1
   if [ "$t" -ge 1000000 ] 2>/dev/null; then
@@ -62,71 +50,64 @@ fmt_tokens() {
   fi
 }
 
-strip_ansi() {
-  printf "%s" "$1" | sed $'s/\033\\[[0-9;]*m//g'
-}
+# ── Segment arrays ───────────────────────────────────────────
+L_bgs=(); L_texts=(); L_widths=()
+R_bgs=(); R_texts=(); R_widths=()
 
-visible_len() {
-  local stripped
-  stripped=$(strip_ansi "$1")
-  printf "%s" "$stripped" | wc -m | tr -d ' '
-}
+add_left()  { L_bgs+=("$1"); L_texts+=("$2"); L_widths+=("$3"); }
+add_right() { R_bgs+=("$1"); R_texts+=("$2"); R_widths+=("$3"); }
 
-transition_lr() {
-  local from=$1 to=$2
-  local from_f to_bg
-  case "$from" in
-    surface0) from_f="$surface0_f" ;; mantle) from_f="$mantle_f" ;; *) from_f="$base_f" ;;
-  esac
-  case "$to" in
-    surface0) to_bg="$surface0" ;; mantle) to_bg="$mantle" ;; *) to_bg="$base" ;;
-  esac
-  printf "%b" "${to_bg}${from_f}${rsep}${rst}"
-}
+# ── LEFT: dir, git, context ─────────────────────────────────
 
-# ── LEFT SIDE ────────────────────────────────────────────────
-
-# Directory
+# 1. Directory
 short_cwd="${cwd/#$HOME/~}"
 if [[ "$short_cwd" == */*/* ]]; then
   short_cwd="…/$(echo "$short_cwd" | rev | cut -d/ -f1-2 | rev)"
 fi
+add_left "$c_surface0" "$(fg "$c_blue")  ${short_cwd} " $(( ${#short_cwd} + 4 ))
 
-left="${surface0}${blue}  ${short_cwd} ${rst}"
-prev_bg="surface0"
-
-# Git
+# 2. Git
 branch=""
 git_info=""
+git_vis=0
 if [ -n "$cwd" ] && git -C "$cwd" rev-parse --git-dir >/dev/null 2>&1; then
   branch=$(git -C "$cwd" -c gc.auto=0 symbolic-ref --short HEAD 2>/dev/null \
            || git -C "$cwd" -c gc.auto=0 rev-parse --short HEAD 2>/dev/null)
+  git_vis=${#branch}
 
   if ! git -C "$cwd" diff --quiet HEAD 2>/dev/null; then
-    git_info+=" ●"
+    git_info+=" ●"; git_vis=$((git_vis + 2))
   fi
 
   stash_count=$(git -C "$cwd" stash list 2>/dev/null | wc -l | tr -d ' ')
-  [ "$stash_count" -gt 0 ] 2>/dev/null && git_info+="  ${stash_count}"
+  if [ "$stash_count" -gt 0 ] 2>/dev/null; then
+    git_info+="  ${stash_count}"; git_vis=$((git_vis + 3 + ${#stash_count}))
+  fi
 
-  upstream=$(git -C "$cwd" rev-parse --abbrev-ref '@{upstream}' 2>/dev/null)
+  upstream=$(git -C "$cwd" rev-parse --abbrev-ref '@{upstream}' 2>/dev/null || true)
   if [ -n "$upstream" ]; then
     ahead=$(git -C "$cwd" rev-list --count '@{upstream}..HEAD' 2>/dev/null)
     behind=$(git -C "$cwd" rev-list --count 'HEAD..@{upstream}' 2>/dev/null)
-    [ "$ahead" -gt 0 ] 2>/dev/null && git_info+=" ↑${ahead}"
-    [ "$behind" -gt 0 ] 2>/dev/null && git_info+=" ↓${behind}"
+    if [ "$ahead" -gt 0 ] 2>/dev/null; then
+      git_info+=" ↑${ahead}"; git_vis=$((git_vis + 2 + ${#ahead}))
+    fi
+    if [ "$behind" -gt 0 ] 2>/dev/null; then
+      git_info+=" ↓${behind}"; git_vis=$((git_vis + 2 + ${#behind}))
+    fi
   fi
 
   tag=$(git -C "$cwd" tag --points-at HEAD 2>/dev/null | head -1)
-  [ -n "$tag" ] && git_info+=" 󰓹 ${tag}"
+  if [ -n "$tag" ]; then
+    git_info+=" 󰓹 ${tag}"; git_vis=$((git_vis + 4 + ${#tag}))
+  fi
 
   git_dir=$(git -C "$cwd" rev-parse --git-dir 2>/dev/null)
   if [ -d "$git_dir/rebase-merge" ] || [ -d "$git_dir/rebase-apply" ]; then
-    git_info+=" ${red}REBASING${green}"
+    git_info+=" $(fg "$c_red")REBASING$(fg "$c_green")"; git_vis=$((git_vis + 9))
   elif [ -f "$git_dir/MERGE_HEAD" ]; then
-    git_info+=" ${red}MERGING${green}"
+    git_info+=" $(fg "$c_red")MERGING$(fg "$c_green")"; git_vis=$((git_vis + 8))
   elif [ -f "$git_dir/CHERRY_PICK_HEAD" ]; then
-    git_info+=" ${red}CHERRY-PICK${green}"
+    git_info+=" $(fg "$c_red")CHERRY-PICK$(fg "$c_green")"; git_vis=$((git_vis + 12))
   fi
 
   last_epoch=$(git -C "$cwd" log -1 --format=%ct 2>/dev/null)
@@ -141,112 +122,116 @@ if [ -n "$cwd" ] && git -C "$cwd" rev-parse --git-dir >/dev/null 2>&1; then
       else
         time_ago="$((diff_sec / 86400))d"
       fi
-      git_info+="  ${time_ago}"
+      git_info+="  ${time_ago}"; git_vis=$((git_vis + 3 + ${#time_ago}))
     fi
   fi
 fi
-[ -n "$git_worktree" ] && branch="$git_worktree"
+[ -n "$git_worktree" ] && branch="$git_worktree" && git_vis=${#branch}
 
 if [ -n "$branch" ]; then
-  left+="$(transition_lr "$prev_bg" mantle)"
-  left+="${mantle}${green}  ${branch}${git_info} ${rst}"
-  prev_bg="mantle"
+  add_left "$c_mantle" "$(fg "$c_green")  ${branch}${git_info} " $((git_vis + 4))
 fi
 
-# Model + Effort + Fast
-if [ -n "$model" ]; then
-  left+="$(transition_lr "$prev_bg" surface0)"
-
-  effort_str=""
-  if [ -n "$effort" ]; then
-    case "$effort" in
-      low)    effort_str=" ${overlay}⚡low" ;;
-      medium) effort_str=" ${teal}⚡med" ;;
-      high)   effort_str=" ${mauve}⚡high" ;;
-      xhigh)  effort_str=" ${pink}⚡max" ;;
-      *)      effort_str=" ${sub}⚡${effort}" ;;
-    esac
-  fi
-
-  fast_str=""
-  [ "$fast" = "true" ] && fast_str=" ${sky}🚀"
-
-  left+="${surface0}${mauve} 󰧑 ${model}${effort_str}${fast_str} ${rst}"
-  prev_bg="surface0"
-fi
-
-# Left cap (rounded end)
-case "$prev_bg" in
-  surface0) left+="${surface0_f}${rcap}${rst}" ;;
-  mantle)   left+="${mantle_f}${rcap}${rst}" ;;
-  *)        left+="${base_f}${rcap}${rst}" ;;
-esac
-
-# ── RIGHT SIDE ───────────────────────────────────────────────
-right=""
-
-# Context window
-ctx_seg=""
+# 3. Context window (left side — always visible when > 0%)
 if [ -n "$used_pct" ]; then
   used_int=$(printf '%.0f' "$used_pct")
   if [ "$used_int" -gt 0 ]; then
-    if [ "$used_int" -ge 80 ]; then
-      c_fg="$red"
-    elif [ "$used_int" -ge 50 ]; then
-      c_fg="$peach"
-    else
-      c_fg="$lavender"
-    fi
+    if [ "$used_int" -ge 80 ]; then ctx_c="$c_red"
+    elif [ "$used_int" -ge 50 ]; then ctx_c="$c_peach"
+    else ctx_c="$c_lavender"; fi
 
     ctx_label="${used_int}%"
     [ -n "$used_tokens" ] && ctx_label="$(fmt_tokens "$used_tokens") · ${used_int}%"
 
-    ctx_seg="${surface0_f}${lcap}${rst}${surface0}${c_fg} 󰊠 ${ctx_label} ${rst}"
+    add_left "$c_surface0" "$(fg "$ctx_c") 󰊠 ${ctx_label} " $((${#ctx_label} + 4))
   fi
 fi
 
-# Rate limits (contextual: ≥70% warning, ≥95% critical)
-rl_seg=""
-rl_worst=0
-rl_label=""
+# ── RIGHT: model+effort, rate limits (contextual) ───────────
+
+# 1. Model + Effort (always present — anchors right side)
+if [ -n "$model" ]; then
+  m_text="$(fg "$c_mauve") 󰧑 ${model}"
+  m_vis=$((${#model} + 4))
+
+  if [ -n "$effort" ]; then
+    case "$effort" in
+      low)    m_text+=" $(fg "$c_overlay")⚡low"; m_vis=$((m_vis + 4)) ;;
+      medium) m_text+=" $(fg "$c_teal")⚡med"; m_vis=$((m_vis + 4)) ;;
+      high)   m_text+=" $(fg "$c_mauve")⚡high"; m_vis=$((m_vis + 5)) ;;
+      xhigh)  m_text+=" $(fg "$c_pink")⚡max"; m_vis=$((m_vis + 4)) ;;
+      *)      m_text+=" $(fg "$c_sub")⚡${effort}"; m_vis=$((m_vis + 1 + ${#effort})) ;;
+    esac
+  fi
+
+  if [ "$fast" = "true" ]; then
+    m_text+=" $(fg "$c_sky")🚀"; m_vis=$((m_vis + 3))
+  fi
+
+  add_right "$c_surface0" "${m_text} " $((m_vis + 1))
+fi
+
+# 2. Rate limits (contextual — only when close to limits)
+rl_worst=0; rl_label=""
 for pair in "5h:${rl_5h:-0}" "7d:${rl_7d:-0}"; do
-  period="${pair%%:*}"
-  pct="${pair#*:}"
+  period="${pair%%:*}"; pct="${pair#*:}"
   pct_int=$(printf '%.0f' "$pct" 2>/dev/null || echo 0)
   if [ "$pct_int" -gt "$rl_worst" ]; then
-    rl_worst="$pct_int"
-    rl_label="${period} ${pct_int}%"
+    rl_worst="$pct_int"; rl_label="${period} ${pct_int}%"
   fi
 done
-
 if [ "$rl_worst" -ge 70 ]; then
-  if [ "$rl_worst" -ge 95 ]; then
-    rl_fg="$red"; rl_icon="󰀦"
-  else
-    rl_fg="$peach"; rl_icon="⏱"
-  fi
-  if [ -n "$ctx_seg" ]; then
-    rl_seg="${mantle_f}${lcap}${rst}${mantle}${rl_fg} ${rl_icon} ${rl_label} ${rst}${surface0}${mantle_f}${rsep}${rst}"
-  else
-    rl_seg="${mantle_f}${lcap}${rst}${mantle}${rl_fg} ${rl_icon} ${rl_label} ${rst}"
-  fi
+  if [ "$rl_worst" -ge 95 ]; then rl_c="$c_red"; else rl_c="$c_peach"; fi
+  add_right "$c_mantle" "$(fg "$rl_c") ⏱ ${rl_label} " $((${#rl_label} + 4))
 fi
 
-# Assemble right: rate limit (if any) then context
-if [ -n "$rl_seg" ] && [ -n "$ctx_seg" ]; then
-  right="${rl_seg}${ctx_seg}"
-elif [ -n "$ctx_seg" ]; then
-  right="${ctx_seg}"
-elif [ -n "$rl_seg" ]; then
-  right="${rl_seg}"
+# ── RENDER LEFT ──────────────────────────────────────────────
+left_out=""
+left_total_w=0
+prev_lbg=""
+for i in "${!L_bgs[@]}"; do
+  cur_bg="${L_bgs[$i]}"
+  if [ -n "$prev_lbg" ]; then
+    left_out+="$(bg "$cur_bg")$(fg "$prev_lbg")${sep_r}"
+    left_total_w=$((left_total_w + 1))
+  fi
+  left_out+="$(bg "$cur_bg")${L_texts[$i]}"
+  left_total_w=$((left_total_w + L_widths[$i]))
+  prev_lbg="$cur_bg"
+done
+# End cap
+if [ -n "$prev_lbg" ]; then
+  left_out+="${rst}$(fg "$prev_lbg")${sep_r}${rst}"
+  left_total_w=$((left_total_w + 1))
+fi
+
+# ── RENDER RIGHT ─────────────────────────────────────────────
+right_out=""
+right_total_w=0
+if [ ${#R_bgs[@]} -gt 0 ]; then
+  # Right segments flow right-to-left: each opens with sep_l
+  # Connect adjacent right segments seamlessly
+  for i in "${!R_bgs[@]}"; do
+    cur_bg="${R_bgs[$i]}"
+    if [ "$i" -eq 0 ]; then
+      # First right segment: opens against terminal bg
+      right_out+="$(fg "$cur_bg")${sep_l}$(bg "$cur_bg")${R_texts[$i]}"
+    else
+      # Subsequent: transition from previous segment
+      right_out+="$(fg "$cur_bg")${sep_l}$(bg "$cur_bg")${R_texts[$i]}"
+    fi
+    right_total_w=$((right_total_w + 1 + R_widths[$i]))
+  done
+  right_out+="${rst}"
 fi
 
 # ── PAD & OUTPUT ─────────────────────────────────────────────
-left_len=$(visible_len "$left")
-right_len=$(visible_len "$right")
-pad=$((cols - left_len - right_len))
-[ "$pad" -lt 1 ] && pad=1
-
-padding=$(printf "%${pad}s" "")
-
-printf "%b" "${left}${padding}${right}"
+if [ "$right_total_w" -gt 0 ]; then
+  pad=$((cols - left_total_w - right_total_w))
+  [ "$pad" -lt 2 ] && pad=2
+  padding=$(printf "%${pad}s" "")
+  printf "%b" "${left_out}${padding}${right_out}"
+else
+  # No right segments — just output left, no trailing space
+  printf "%b" "${left_out}"
+fi
