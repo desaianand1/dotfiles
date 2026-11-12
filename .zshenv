@@ -14,7 +14,7 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # Claude Code
-export CLAUDE_CODE_AUTO_COMPACT_WINDOW="200k"
+export CLAUDE_CODE_AUTO_COMPACT_WINDOW="300k"
 
 # Vite+ bin (https://viteplus.dev)
 . "/Users/anand/.config/vite-plus/env"
