@@ -133,6 +133,12 @@ if [ -n "$branch" ]; then
 fi
 
 # 3. Context window (left side — always visible when > 0%)
+# Measure against the compact window, not the model's full window, so the
+# percentage reflects when a manual /compact is due.
+compact_window="${CLAUDE_CODE_AUTO_COMPACT_WINDOW:-}"
+if [[ "$compact_window" =~ ^[0-9]+$ ]] && [ -n "$used_tokens" ]; then
+  used_pct=$(echo "$used_tokens * 100 / $compact_window" | bc -l)
+fi
 if [ -n "$used_pct" ]; then
   used_int=$(printf '%.0f' "$used_pct")
   if [ "$used_int" -gt 0 ]; then
